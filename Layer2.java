@@ -1,5 +1,3 @@
-package mappers;
-
 import java.io.IOException;
 
 import org.apache.hadoop.io.LongWritable;
@@ -12,26 +10,18 @@ public class Layer2 {
 
 		protected void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
 			String keyValue = value.toString().split("\t");
-			String key = keyValue[0];
-			String value = keyValue[1];
-			WordsInDecadeWritable words = null;
-			Long count = null;
-			if (primarySplit.length > 1) {
-				count = Long.valueOf(primarySplit[1]);
-				String[] rawWordInDecade = primarySplit[0].split(" ");
-				if (rawWordInDecade.length > 2) {
-					words = new WordsInDecadeWritable(rawWordInDecade[0], rawWordInDecade[1],
-							Integer.valueOf(rawWordInDecade[2]));
-				} else if (rawWordInDecade.length == 2) {
-					words = new WordsInDecadeWritable(rawWordInDecade[0], Integer.valueOf(rawWordInDecade[1]));
-				} else {
-					return;
-				}
-			} else {
+			String str_wwdKey = keyValue[0];
+			String count = keyValue[1];
+			try {
+				WordWordDecade wwdKey = WordWordDecade.parse(str_wwdKey);
+			}
+			catch( Exception ex) {
+				System.out.println("EXCEPTION: " + ex);
 				return;
 			}
+
 			System.out.println("Mapped: " + value);
-			WordsInDecadeWritable keyToWrite = null;
+			WordWordDecade newKey = null;
 			SeconderySortWritable valueToWrite = null;
 			if (!words.isCouple) {
 				keyToWrite = new WordsInDecadeWritable(words.word1 + '$', words.decade);

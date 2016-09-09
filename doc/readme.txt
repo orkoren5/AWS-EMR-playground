@@ -1,4 +1,4 @@
-hello world world hello hello
+﻿hello world world hello hello
 
 
 LYER1:
@@ -29,7 +29,7 @@ MAPEER INPUT -> OUTPUT
 <"decade *",all words in decade amount>		-> <"decade *",all words in decade amount>
 
 Reducer INPUT -> OUTPUT
-<"decade wk",("pairAmount_w1",......,"pairAmount_wN","singleWk")>	-> <"decade w1","wk pairAmount_w1_wk single_wk">,.....
+<"decade wk",("pairAmount_w1",......,"pairAmount_wN","singleWk")>	-> <"decade w1","wk pairAmount_w1_wk AmountOf_wk_asFirstWord">,.....
 <"decade *",all words in decade amount>					->unchanged
 
 
