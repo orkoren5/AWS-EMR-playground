@@ -1,0 +1,36 @@
+java file folder:
+
+
+/usr/local/hadoop$ cd /home/goo/Desktop/wordcountf/
+/home/goo/Desktop/wordcountf$ javac -classpath $HADOOP_HOME/share/hadoop/common/hadoop-common-2.7.1.jar:$HADOOP_HOME/share/hadoop/mapreduce/hadoop-mapreduce-client-core-2.7.1.jar:$HADOOP_HOME/share/hadoop/common/lib/commons-cli-1.2.jar -d /home/goo/Desktop/wordcountf/ *.java
+
+javac -classpath $HADOOP_HOME/share/hadoop/common/hadoop-common-2.7.1.jar:$HADOOP_HOME/share/hadoop/mapreduce/hadoop-mapreduce-client-core-2.7.1.jar:$HADOOP_HOME/share/hadoop/common/lib/commons-cli-1.2.jar -d /home/goo/Desktop/wordcountf/ *.java
+
+
+
+jar -cvf wordcountj.jar -C /home/goo/Desktop/wordcountf/wordcountc .
+
+hadoop folder: 
+cd /usr/local/hadoop/
+/usr/local/hadoop/bin/hadoop jar /home/goo/Desktop/wordcountf/wordcountj.jar WordCountpro /user/inputdata/ outputwc10
+
+add input:
+
+bin/hdfs dfs -put '/home/goo/Desktop/inputdata' /user
+
+
+
+
+http://localhost:50070
+http://localhost:8088/cluster
+http://baazgusht.blogspot.co.il/2015/08/how-to-install-hadoop-271-on-ubuntu.html
+https://aws.amazon.com/datasets/google-books-ngrams/
+
+התקנה:
+https://www.youtube.com/watch?v=YY8QL25KCOg
+הרצה:
+https://www.youtube.com/watch?v=ve841JxF_VE
+
+
+
+javac -classpath $HADOOP_HOME/share/hadoop/common/hadoop-common-2.7.1.jar:$HADOOP_HOME/share/hadoop/mapreduce/hadoop-mapreduce-client-core-2.7.1.jar:$HADOOP_HOME/share/hadoop/common/lib/commons-cli-1.2.jar -d /home/ise/Desktop/WordCount *.java

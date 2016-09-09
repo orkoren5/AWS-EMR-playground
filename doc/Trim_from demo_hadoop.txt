@@ -1,0 +1,369 @@
+hadoop.yarn.exceptions.InvalidAuxServiceException: The auxService:mapreduce_shuffle does not exist
+	at sun.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)
+	at sun.reflect.NativeConstructorAccessorImpl.newInstance(NativeConstructorAccessorImpl.java:57)
+	at sun.reflect.DelegatingConstructorAccessorImpl.newInstance(DelegatingConstructorAccessorImpl.java:45)
+	at java.lang.reflect.Constructor.newInstance(Constructor.java:526)
+	at org.apache.hadoop.yarn.api.records.impl.pb.SerializedExceptionPBImpl.instantiateException(SerializedExceptionPBImpl.java:168)
+	at org.apache.hadoop.yarn.api.records.impl.pb.SerializedExceptionPBImpl.deSerialize(SerializedExceptionPBImpl.java:106)
+	at org.apache.hadoop.mapreduce.v2.app.launcher.ContainerLauncherImpl$Container.launch(ContainerLauncherImpl.java:155)
+	at org.apache.hadoop.mapreduce.v2.app.launcher.ContainerLauncherImpl$EventProcessor.run(ContainerLauncherImpl.java:375)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1145)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:615)
+	at java.lang.Thread.run(Thread.java:745)
+
+16/07/21 14:16:12 INFO mapreduce.Job: Task Id : attempt_1469094760148_0001_m_000000_2, Status : FAILED
+Container launch failed for container_1469094760148_0001_01_000004 : org.apache.hadoop.yarn.exceptions.InvalidAuxServiceException: The auxService:mapreduce_shuffle does not exist
+	at sun.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)
+	at sun.reflect.NativeConstructorAccessorImpl.newInstance(NativeConstructorAccessorImpl.java:57)
+	at sun.reflect.DelegatingConstructorAccessorImpl.newInstance(DelegatingConstructorAccessorImpl.java:45)
+	at java.lang.reflect.Constructor.newInstance(Constructor.java:526)
+	at org.apache.hadoop.yarn.api.records.impl.pb.SerializedExceptionPBImpl.instantiateException(SerializedExceptionPBImpl.java:168)
+	at org.apache.hadoop.yarn.api.records.impl.pb.SerializedExceptionPBImpl.deSerialize(SerializedExceptionPBImpl.java:106)
+	at org.apache.hadoop.mapreduce.v2.app.launcher.ContainerLauncherImpl$Container.launch(ContainerLauncherImpl.java:155)
+	at org.apache.hadoop.mapreduce.v2.app.launcher.ContainerLauncherImpl$EventProcessor.run(ContainerLauncherImpl.java:375)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1145)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:615)
+	at java.lang.Thread.run(Thread.java:745)
+
+16/07/21 14:16:16 INFO mapreduce.Job:  map 100% reduce 100%
+16/07/21 14:16:16 INFO mapreduce.Job: Job job_1469094760148_0001 failed with state FAILED due to: Task failed task_1469094760148_0001_m_000000
+Job failed as tasks failed. failedMaps:1 failedReduces:0
+
+16/07/21 14:16:16 INFO mapreduce.Job: Counters: 4
+	Job Counters 
+		Other local map tasks=3
+		Data-local map tasks=1
+		Total time spent by all maps in occupied slots (ms)=0
+		Total time spent by all reduces in occupied slots (ms)=0
+hduser@goo-Ideapad-Z560:/usr/local/hadoop$ stop-all.sh
+This script is Deprecated. Instead use stop-dfs.sh and stop-yarn.sh
+16/07/21 14:19:08 WARN util.NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+Stopping namenodes on [localhost]
+localhost: stopping namenode
+localhost: stopping datanode
+Stopping secondary namenodes [0.0.0.0]
+0.0.0.0: stopping secondarynamenode
+16/07/21 14:19:30 WARN util.NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+stopping yarn daemons
+stopping resourcemanager
+localhost: stopping nodemanager
+localhost: nodemanager did not stop gracefully after 5 seconds: killing with kill -9
+no proxyserver to stop
+hduser@goo-Ideapad-Z560:/usr/local/hadoop$ cd '/usr/local/hadoop/etc/hadoop' 
+hduser@goo-Ideapad-Z560:/usr/local/hadoop/etc/hadoop$ ls
+capacity-scheduler.xml      kms-log4j.properties
+configuration.xsl           kms-site.xml
+container-executor.cfg      log4j.properties
+core-site.xml               mapred-env.cmd
+hadoop-env.cmd              mapred-env.sh
+hadoop-env.sh               mapred-queues.xml.template
+hadoop-metrics2.properties  mapred-site.xml
+hadoop-metrics.properties   mapred-site.xml.template
+hadoop-policy.xml           mepred-site.xml
+hdfs-site.xml               slaves
+httpfs-env.sh               ssl-client.xml.example
+httpfs-log4j.properties     ssl-server.xml.example
+httpfs-signature.secret     yarn-env.cmd
+httpfs-site.xml             yarn-env.sh
+kms-acls.xml                yarn-site.xml
+kms-env.sh
+hduser@goo-Ideapad-Z560:/usr/local/hadoop/etc/hadoop$ sudo nano '/usr/local/hadoop/etc/hadoop/yarn-site.xml' 
+[sudo] password for hduser: 
+hduser@goo-Ideapad-Z560:/usr/local/hadoop/etc/hadoop$ sudo nano '/usr/local/hadoop/etc/hadoop/yarn-site.xml' 
+hduser@goo-Ideapad-Z560:/usr/local/hadoop/etc/hadoop$ start-yarn.sh
+starting yarn daemons
+starting resourcemanager, logging to /usr/local/hadoop/logs/yarn-hduser-resourcemanager-goo-Ideapad-Z560.out
+localhost: starting nodemanager, logging to /usr/local/hadoop/logs/yarn-hduser-nodemanager-goo-Ideapad-Z560.out
+hduser@goo-Ideapad-Z560:/usr/local/hadoop/etc/hadoop$ start-dfs.sh16/07/21 14:23:29 WARN util.NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+Starting namenodes on [localhost]
+localhost: starting namenode, logging to /usr/local/hadoop/logs/hadoop-hduser-namenode-goo-Ideapad-Z560.out
+localhost: starting datanode, logging to /usr/local/hadoop/logs/hadoop-hduser-datanode-goo-Ideapad-Z560.out
+Starting secondary namenodes [0.0.0.0]
+0.0.0.0: starting secondarynamenode, logging to /usr/local/hadoop/logs/hadoop-hduser-secondarynamenode-goo-Ideapad-Z560.out
+16/07/21 14:23:47 WARN util.NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+hduser@goo-Ideapad-Z560:/usr/local/hadoop/etc/hadoop$ start-yarn.sh
+starting yarn daemons
+resourcemanager running as process 16149. Stop it first.
+localhost: nodemanager running as process 16284. Stop it first.
+hduser@goo-Ideapad-Z560:/usr/local/hadoop/etc/hadoop$ jps
+16913 DataNode
+17116 SecondaryNameNode
+17373 Jps
+16149 ResourceManager
+16284 NodeManager
+16750 NameNode
+hduser@goo-Ideapad-Z560:/usr/local/hadoop/etc/hadoop$ javac -classpath $HADOOP_HOME/share/hadoop/common/hadoop-common-2.7.1.jar:$HADOOP_HOME/share/hadoop/mapreduce/hadoop-mapreduce-client-core-2.7.1.jar:$HADOOP_HOME/share/hadoop/common/lib/commons-cli-1.2.jar -d /home/goo/Desktop/wordcountf *.java
+javac: file not found: *.java
+Usage: javac <options> <source files>
+use -help for a list of possible options
+hduser@goo-Ideapad-Z560:/usr/local/hadoop/etc/hadoop$ cd /home/goo/Desktop/wordcountf/
+hduser@goo-Ideapad-Z560:/home/goo/Desktop/wordcountf$ javac -classpath $HADOOP_HOME/share/hadoop/common/hadoop-common-2.7.1.jar:$HADOOP_HOME/share/hadoop/mapreduce/hadoop-mapreduce-client-core-2.7.1.jar:$HADOOP_HOME/share/hadoop/common/lib/commons-cli-1.2.jar -d /home/goo/Desktop/wordcountf *.java
+hduser@goo-Ideapad-Z560:/home/goo/Desktop/wordcountf$ bin/hadoop jar /home/goo/Desktop/wordcountf/wordcountj.jar WordCountpro /user/inputdata/ outputwc
+bash: bin/hadoop: No such file or directory
+hduser@goo-Ideapad-Z560:/home/goo/Desktop/wordcountf$ cd /usr/local/hadoop
+hduser@goo-Ideapad-Z560:/usr/local/hadoop$ bin/hadoop jar /home/goo/Desktop/wordcountf/wordcountj.jar WordCountpro /user/inputdata/ outputwc
+Not a valid JAR: /home/goo/Desktop/wordcountf/wordcountj.jar
+hduser@goo-Ideapad-Z560:/usr/local/hadoop$ jar -cvf wordcountj.jar -C /home/goo/Desktop/wordcountf/wordcountc .
+added manifest
+adding: WordCountpro.class(in = 1623) (out= 854)(deflated 47%)
+adding: WordCountpro$TokenizerMapper.class(in = 1796) (out= 769)(deflated 57%)
+adding: WordCountpro$IntSumReducer.class(in = 1748) (out= 741)(deflated 57%)
+hduser@goo-Ideapad-Z560:/usr/local/hadoop$ bin/hadoop jar /home/goo/Desktop/wordcountf/wordcountj.jar WordCountpro /user/inputdata/ outputwc
+16/07/21 14:28:08 WARN util.NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+16/07/21 14:28:10 INFO client.RMProxy: Connecting to ResourceManager at /0.0.0.0:8032
+Exception in thread "main" org.apache.hadoop.mapred.FileAlreadyExistsException: Output directory hdfs://localhost:9000/user/hduser/outputwc already exists
+	at org.apache.hadoop.mapreduce.lib.output.FileOutputFormat.checkOutputSpecs(FileOutputFormat.java:146)
+	at org.apache.hadoop.mapreduce.JobSubmitter.checkSpecs(JobSubmitter.java:266)
+	at org.apache.hadoop.mapreduce.JobSubmitter.submitJobInternal(JobSubmitter.java:139)
+	at org.apache.hadoop.mapreduce.Job$10.run(Job.java:1290)
+	at org.apache.hadoop.mapreduce.Job$10.run(Job.java:1287)
+	at java.security.AccessController.doPrivileged(Native Method)
+	at javax.security.auth.Subject.doAs(Subject.java:415)
+	at org.apache.hadoop.security.UserGroupInformation.doAs(UserGroupInformation.java:1657)
+	at org.apache.hadoop.mapreduce.Job.submit(Job.java:1287)
+	at org.apache.hadoop.mapreduce.Job.waitForCompletion(Job.java:1308)
+	at WordCountpro.main(WordCountpro.java:61)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:606)
+	at org.apache.hadoop.util.RunJar.run(RunJar.java:221)
+	at org.apache.hadoop.util.RunJar.main(RunJar.java:136)
+hduser@goo-Ideapad-Z560:/usr/local/hadoop$ bin/hadoop jar /home/goo/Desktop/wordcountf/wordcountj.jar WordCountpro /user/inputdata/ outputwc2
+16/07/21 14:28:32 WARN util.NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+16/07/21 14:28:33 INFO client.RMProxy: Connecting to ResourceManager at /0.0.0.0:8032
+16/07/21 14:28:33 WARN mapreduce.JobResourceUploader: Hadoop command-line option parsing not performed. Implement the Tool interface and execute your application with ToolRunner to remedy this.
+16/07/21 14:28:34 INFO input.FileInputFormat: Total input paths to process : 1
+16/07/21 14:28:34 INFO mapreduce.JobSubmitter: number of splits:1
+16/07/21 14:28:35 INFO mapreduce.JobSubmitter: Submitting tokens for job: job_1469100199884_0001
+16/07/21 14:28:35 INFO impl.YarnClientImpl: Submitted application application_1469100199884_0001
+16/07/21 14:28:35 INFO mapreduce.Job: The url to track the job: http://goo-Ideapad-Z560:8088/proxy/application_1469100199884_0001/
+16/07/21 14:28:35 INFO mapreduce.Job: Running job: job_1469100199884_0001
+16/07/21 14:28:44 INFO mapreduce.Job: Job job_1469100199884_0001 running in uber mode : false
+16/07/21 14:28:44 INFO mapreduce.Job:  map 0% reduce 0%
+16/07/21 14:28:50 INFO mapreduce.Job: Task Id : attempt_1469100199884_0001_m_000000_0, Status : FAILED
+Error: java.io.IOException: hdfs://localhost:9000/user/inputdata/test.txt not a SequenceFile
+	at org.apache.hadoop.io.SequenceFile$Reader.init(SequenceFile.java:1853)
+	at org.apache.hadoop.io.SequenceFile$Reader.initialize(SequenceFile.java:1813)
+	at org.apache.hadoop.io.SequenceFile$Reader.<init>(SequenceFile.java:1762)
+	at org.apache.hadoop.io.SequenceFile$Reader.<init>(SequenceFile.java:1776)
+	at org.apache.hadoop.mapreduce.lib.input.SequenceFileRecordReader.initialize(SequenceFileRecordReader.java:54)
+	at org.apache.hadoop.mapred.MapTask$NewTrackingRecordReader.initialize(MapTask.java:548)
+	at org.apache.hadoop.mapred.MapTask.runNewMapper(MapTask.java:786)
+	at org.apache.hadoop.mapred.MapTask.run(MapTask.java:341)
+	at org.apache.hadoop.mapred.YarnChild$2.run(YarnChild.java:164)
+	at java.security.AccessController.doPrivileged(Native Method)
+	at javax.security.auth.Subject.doAs(Subject.java:415)
+	at org.apache.hadoop.security.UserGroupInformation.doAs(UserGroupInformation.java:1657)
+	at org.apache.hadoop.mapred.YarnChild.main(YarnChild.java:158)
+
+16/07/21 14:28:56 INFO mapreduce.Job: Task Id : attempt_1469100199884_0001_m_000000_1, Status : FAILED
+Error: java.io.IOException: hdfs://localhost:9000/user/inputdata/test.txt not a SequenceFile
+	at org.apache.hadoop.io.SequenceFile$Reader.init(SequenceFile.java:1853)
+	at org.apache.hadoop.io.SequenceFile$Reader.initialize(SequenceFile.java:1813)
+	at org.apache.hadoop.io.SequenceFile$Reader.<init>(SequenceFile.java:1762)
+	at org.apache.hadoop.io.SequenceFile$Reader.<init>(SequenceFile.java:1776)
+	at org.apache.hadoop.mapreduce.lib.input.SequenceFileRecordReader.initialize(SequenceFileRecordReader.java:54)
+	at org.apache.hadoop.mapred.MapTask$NewTrackingRecordReader.initialize(MapTask.java:548)
+	at org.apache.hadoop.mapred.MapTask.runNewMapper(MapTask.java:786)
+	at org.apache.hadoop.mapred.MapTask.run(MapTask.java:341)
+	at org.apache.hadoop.mapred.YarnChild$2.run(YarnChild.java:164)
+	at java.security.AccessController.doPrivileged(Native Method)
+	at javax.security.auth.Subject.doAs(Subject.java:415)
+	at org.apache.hadoop.security.UserGroupInformation.doAs(UserGroupInformation.java:1657)
+	at org.apache.hadoop.mapred.YarnChild.main(YarnChild.java:158)
+
+16/07/21 14:29:02 INFO mapreduce.Job: Task Id : attempt_1469100199884_0001_m_000000_2, Status : FAILED
+Error: java.io.IOException: hdfs://localhost:9000/user/inputdata/test.txt not a SequenceFile
+	at org.apache.hadoop.io.SequenceFile$Reader.init(SequenceFile.java:1853)
+	at org.apache.hadoop.io.SequenceFile$Reader.initialize(SequenceFile.java:1813)
+	at org.apache.hadoop.io.SequenceFile$Reader.<init>(SequenceFile.java:1762)
+	at org.apache.hadoop.io.SequenceFile$Reader.<init>(SequenceFile.java:1776)
+	at org.apache.hadoop.mapreduce.lib.input.SequenceFileRecordReader.initialize(SequenceFileRecordReader.java:54)
+	at org.apache.hadoop.mapred.MapTask$NewTrackingRecordReader.initialize(MapTask.java:548)
+	at org.apache.hadoop.mapred.MapTask.runNewMapper(MapTask.java:786)
+	at org.apache.hadoop.mapred.MapTask.run(MapTask.java:341)
+	at org.apache.hadoop.mapred.YarnChild$2.run(YarnChild.java:164)
+	at java.security.AccessController.doPrivileged(Native Method)
+	at javax.security.auth.Subject.doAs(Subject.java:415)
+	at org.apache.hadoop.security.UserGroupInformation.doAs(UserGroupInformation.java:1657)
+	at org.apache.hadoop.mapred.YarnChild.main(YarnChild.java:158)
+
+16/07/21 14:29:10 INFO mapreduce.Job:  map 100% reduce 100%
+16/07/21 14:29:10 INFO mapreduce.Job: Job job_1469100199884_0001 failed with state FAILED due to: Task failed task_1469100199884_0001_m_000000
+Job failed as tasks failed. failedMaps:1 failedReduces:0
+
+16/07/21 14:29:10 INFO mapreduce.Job: Counters: 9
+	Job Counters 
+		Failed map tasks=4
+		Launched map tasks=4
+		Other local map tasks=3
+		Data-local map tasks=1
+		Total time spent by all maps in occupied slots (ms)=16937
+		Total time spent by all reduces in occupied slots (ms)=0
+		Total time spent by all map tasks (ms)=16937
+		Total vcore-seconds taken by all map tasks=16937
+		Total megabyte-seconds taken by all map tasks=17343488
+hduser@goo-Ideapad-Z560:/usr/local/hadoop$ bin/hadoop jar /home/goo/Desktop/wordcountf/wordcountj.jar WordCountpro /user/inputdata/ outputwc3
+16/07/21 14:58:44 WARN util.NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+16/07/21 14:58:45 INFO client.RMProxy: Connecting to ResourceManager at /0.0.0.0:8032
+16/07/21 14:58:46 WARN mapreduce.JobResourceUploader: Hadoop command-line option parsing not performed. Implement the Tool interface and execute your application with ToolRunner to remedy this.
+16/07/21 14:58:46 INFO input.FileInputFormat: Total input paths to process : 1
+16/07/21 14:58:46 INFO mapreduce.JobSubmitter: number of splits:1
+16/07/21 14:58:46 INFO mapreduce.JobSubmitter: Submitting tokens for job: job_1469100199884_0002
+16/07/21 14:58:47 INFO impl.YarnClientImpl: Submitted application application_1469100199884_0002
+16/07/21 14:58:47 INFO mapreduce.Job: The url to track the job: http://goo-Ideapad-Z560:8088/proxy/application_1469100199884_0002/
+16/07/21 14:58:47 INFO mapreduce.Job: Running job: job_1469100199884_0002
+16/07/21 14:58:55 INFO mapreduce.Job: Job job_1469100199884_0002 running in uber mode : false
+16/07/21 14:58:55 INFO mapreduce.Job:  map 0% reduce 0%
+16/07/21 14:59:00 INFO mapreduce.Job: Task Id : attempt_1469100199884_0002_m_000000_0, Status : FAILED
+Error: java.io.IOException: hdfs://localhost:9000/user/inputdata/test.txt not a SequenceFile
+	at org.apache.hadoop.io.SequenceFile$Reader.init(SequenceFile.java:1853)
+	at org.apache.hadoop.io.SequenceFile$Reader.initialize(SequenceFile.java:1813)
+	at org.apache.hadoop.io.SequenceFile$Reader.<init>(SequenceFile.java:1762)
+	at org.apache.hadoop.io.SequenceFile$Reader.<init>(SequenceFile.java:1776)
+	at org.apache.hadoop.mapreduce.lib.input.SequenceFileRecordReader.initialize(SequenceFileRecordReader.java:54)
+	at org.apache.hadoop.mapred.MapTask$NewTrackingRecordReader.initialize(MapTask.java:548)
+	at org.apache.hadoop.mapred.MapTask.runNewMapper(MapTask.java:786)
+	at org.apache.hadoop.mapred.MapTask.run(MapTask.java:341)
+	at org.apache.hadoop.mapred.YarnChild$2.run(YarnChild.java:164)
+	at java.security.AccessController.doPrivileged(Native Method)
+	at javax.security.auth.Subject.doAs(Subject.java:415)
+	at org.apache.hadoop.security.UserGroupInformation.doAs(UserGroupInformation.java:1657)
+	at org.apache.hadoop.mapred.YarnChild.main(YarnChild.java:158)
+
+16/07/21 14:59:06 INFO mapreduce.Job: Task Id : attempt_1469100199884_0002_m_000000_1, Status : FAILED
+Error: java.io.IOException: hdfs://localhost:9000/user/inputdata/test.txt not a SequenceFile
+	at org.apache.hadoop.io.SequenceFile$Reader.init(SequenceFile.java:1853)
+	at org.apache.hadoop.io.SequenceFile$Reader.initialize(SequenceFile.java:1813)
+	at org.apache.hadoop.io.SequenceFile$Reader.<init>(SequenceFile.java:1762)
+	at org.apache.hadoop.io.SequenceFile$Reader.<init>(SequenceFile.java:1776)
+	at org.apache.hadoop.mapreduce.lib.input.SequenceFileRecordReader.initialize(SequenceFileRecordReader.java:54)
+	at org.apache.hadoop.mapred.MapTask$NewTrackingRecordReader.initialize(MapTask.java:548)
+	at org.apache.hadoop.mapred.MapTask.runNewMapper(MapTask.java:786)
+	at org.apache.hadoop.mapred.MapTask.run(MapTask.java:341)
+	at org.apache.hadoop.mapred.YarnChild$2.run(YarnChild.java:164)
+	at java.security.AccessController.doPrivileged(Native Method)
+	at javax.security.auth.Subject.doAs(Subject.java:415)
+	at org.apache.hadoop.security.UserGroupInformation.doAs(UserGroupInformation.java:1657)
+	at org.apache.hadoop.mapred.YarnChild.main(YarnChild.java:158)
+
+16/07/21 14:59:12 INFO mapreduce.Job: Task Id : attempt_1469100199884_0002_m_000000_2, Status : FAILED
+Error: java.io.IOException: hdfs://localhost:9000/user/inputdata/test.txt not a SequenceFile
+	at org.apache.hadoop.io.SequenceFile$Reader.init(SequenceFile.java:1853)
+	at org.apache.hadoop.io.SequenceFile$Reader.initialize(SequenceFile.java:1813)
+	at org.apache.hadoop.io.SequenceFile$Reader.<init>(SequenceFile.java:1762)
+	at org.apache.hadoop.io.SequenceFile$Reader.<init>(SequenceFile.java:1776)
+	at org.apache.hadoop.mapreduce.lib.input.SequenceFileRecordReader.initialize(SequenceFileRecordReader.java:54)
+	at org.apache.hadoop.mapred.MapTask$NewTrackingRecordReader.initialize(MapTask.java:548)
+	at org.apache.hadoop.mapred.MapTask.runNewMapper(MapTask.java:786)
+	at org.apache.hadoop.mapred.MapTask.run(MapTask.java:341)
+	at org.apache.hadoop.mapred.YarnChild$2.run(YarnChild.java:164)
+	at java.security.AccessController.doPrivileged(Native Method)
+	at javax.security.auth.Subject.doAs(Subject.java:415)
+	at org.apache.hadoop.security.UserGroupInformation.doAs(UserGroupInformation.java:1657)
+	at org.apache.hadoop.mapred.YarnChild.main(YarnChild.java:158)
+
+^[[A^[[A^[[B^[[B16/07/21 14:59:20 INFO mapreduce.Job:  map 100% reduce 100%
+16/07/21 14:59:20 INFO mapreduce.Job: Job job_1469100199884_0002 failed with state FAILED due to: Task failed task_1469100199884_0002_m_000000
+Job failed as tasks failed. failedMaps:1 failedReduces:0
+
+16/07/21 14:59:20 INFO mapreduce.Job: Counters: 9
+	Job Counters 
+		Failed map tasks=4
+		Launched map tasks=4
+		Other local map tasks=3
+		Data-local map tasks=1
+		Total time spent by all maps in occupied slots (ms)=16825
+		Total time spent by all reduces in occupied slots (ms)=0
+		Total time spent by all map tasks (ms)=16825
+		Total vcore-seconds taken by all map tasks=16825
+		Total megabyte-seconds taken by all map tasks=17228800
+hduser@goo-Ideapad-Z560:/usr/local/hadoop$ javac -classpath $HADOOP_HOME/share/hadoop/common/hadoop-common-2.7.1.jar:$HADOOP_HOME/share/hadoop/mapreduce/hadoop-mapreduce-client-core-2.7.1.jar:$HADOOP_HOME/share/hadoop/common/lib/commons-cli-1.2.jar -d /home/goo/Desktop/wordcountf *.java
+javac: file not found: *.java
+Usage: javac <options> <source files>
+use -help for a list of possible options
+hduser@goo-Ideapad-Z560:/usr/local/hadoop$ javac -classpath $HADOOP_HOME/share/hadoop/common/hadoop-common-2.7.1.jar:$HADOOP_HOME/share/hadoop/mapreduce/hadoop-mapreduce-client-core-2.7.1.jar:$HADOOP_HOME/share/hadoop/common/lib/commons-cli-1.2.jar -d /home/goo/Desktop/wordcountf *.java
+javac: file not found: *.java
+Usage: javac <options> <source files>
+use -help for a list of possible options
+hduser@goo-Ideapad-Z560:/usr/local/hadoop$ cd 
+hduser@goo-Ideapad-Z560:~$ cd /home/goo/Desktop/wordcountf/
+hduser@goo-Ideapad-Z560:/home/goo/Desktop/wordcountf$ javac -classpath $HADOOP_HOME/share/hadoop/common/hadoop-common-2.7.1.jar:$HADOOP_HOME/share/hadoop/mapreduce/hadoop-mapreduce-client-core-2.7.1.jar:$HADOOP_HOME/share/hadoop/common/lib/commons-cli-1.2.jar -d /home/goo/Desktop/wordcountf *.java
+hduser@goo-Ideapad-Z560:/home/goo/Desktop/wordcountf$ jar -cvf wordcountj.jar -C /home/goo/Desktop/wordcountf/wordcountc .
+added manifest
+adding: WordCountpro.class(in = 1513) (out= 815)(deflated 46%)
+adding: WordCountpro$TokenizerMapper.class(in = 1796) (out= 769)(deflated 57%)
+adding: WordCountpro$IntSumReducer.class(in = 1748) (out= 741)(deflated 57%)
+hduser@goo-Ideapad-Z560:/home/goo/Desktop/wordcountf$ /usr/local/hadoop/bin/hadoop jar /home/goo/Desktop/wordcountf/wordcountj.jar WordCountpro /user/inputdata/ outputwc4
+16/07/21 15:00:55 WARN util.NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+16/07/21 15:00:56 INFO client.RMProxy: Connecting to ResourceManager at /0.0.0.0:8032
+16/07/21 15:00:57 WARN mapreduce.JobResourceUploader: Hadoop command-line option parsing not performed. Implement the Tool interface and execute your application with ToolRunner to remedy this.
+16/07/21 15:00:57 INFO input.FileInputFormat: Total input paths to process : 1
+16/07/21 15:00:57 INFO mapreduce.JobSubmitter: number of splits:1
+16/07/21 15:00:58 INFO mapreduce.JobSubmitter: Submitting tokens for job: job_1469100199884_0003
+16/07/21 15:00:58 INFO impl.YarnClientImpl: Submitted application application_1469100199884_0003
+16/07/21 15:00:58 INFO mapreduce.Job: The url to track the job: http://goo-Ideapad-Z560:8088/proxy/application_1469100199884_0003/
+16/07/21 15:00:58 INFO mapreduce.Job: Running job: job_1469100199884_0003
+16/07/21 15:01:06 INFO mapreduce.Job: Job job_1469100199884_0003 running in uber mode : false
+16/07/21 15:01:06 INFO mapreduce.Job:  map 0% reduce 0%
+16/07/21 15:01:13 INFO mapreduce.Job:  map 100% reduce 0%
+16/07/21 15:01:20 INFO mapreduce.Job:  map 100% reduce 100%
+16/07/21 15:01:21 INFO mapreduce.Job: Job job_1469100199884_0003 completed successfully
+16/07/21 15:01:21 INFO mapreduce.Job: Counters: 49
+	File System Counters
+		FILE: Number of bytes read=42
+		FILE: Number of bytes written=230873
+		FILE: Number of read operations=0
+		FILE: Number of large read operations=0
+		FILE: Number of write operations=0
+		HDFS: Number of bytes read=140
+		HDFS: Number of bytes written=32
+		HDFS: Number of read operations=6
+		HDFS: Number of large read operations=0
+		HDFS: Number of write operations=2
+	Job Counters 
+		Launched map tasks=1
+		Launched reduce tasks=1
+		Data-local map tasks=1
+		Total time spent by all maps in occupied slots (ms)=4552
+		Total time spent by all reduces in occupied slots (ms)=4897
+		Total time spent by all map tasks (ms)=4552
+		Total time spent by all reduce tasks (ms)=4897
+		Total vcore-seconds taken by all map tasks=4552
+		Total vcore-seconds taken by all reduce tasks=4897
+		Total megabyte-seconds taken by all map tasks=4661248
+		Total megabyte-seconds taken by all reduce tasks=5014528
+	Map-Reduce Framework
+		Map input records=1
+		Map output records=1
+		Map output bytes=34
+		Map output materialized bytes=42
+		Input split bytes=110
+		Combine input records=1
+		Combine output records=1
+		Reduce input groups=1
+		Reduce shuffle bytes=42
+		Reduce input records=1
+		Reduce output records=1
+		Spilled Records=2
+		Shuffled Maps =1
+		Failed Shuffles=0
+		Merged Map outputs=1
+		GC time elapsed (ms)=100
+		CPU time spent (ms)=2540
+		Physical memory (bytes) snapshot=456056832
+		Virtual memory (bytes) snapshot=1698787328
+		Total committed heap usage (bytes)=336068608
+	Shuffle Errors
+		BAD_ID=0
+		CONNECTION=0
+		IO_ERROR=0
+		WRONG_LENGTH=0
+		WRONG_MAP=0
+		WRONG_REDUCE=0
+	File Input Format Counters 
+		Bytes Read=30
+	File Output Format Counters 
+		Bytes Written=32
+hduser@goo-Ideapad-Z560:/home/goo/Desktop/wordcountf$ 
