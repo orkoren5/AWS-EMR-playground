@@ -10,12 +10,6 @@ public class WordWordDecade implements WritableComparable<WordWordDecade> {
 	private String word2;
 	private Integer decade;
 
-	public WordWordDecade() {
-		this.word1 = "";
-		this.word2 = "";
-		this.decade = 0;
-	}
-
 	public WordWordDecade(String word1, String word2, Integer year) {
 		this.word1 = word1;
 		this.word2 = word2;
@@ -26,6 +20,24 @@ public class WordWordDecade implements WritableComparable<WordWordDecade> {
 		WordWordDecade(word, "", decade);		
 	}
 
+	public WordWordDecade(Integer decade) {
+		WordWordDecade("", "", decade);		
+	}
+	
+	public static WordWordDecade parse(String value) {
+		String[] splt = value.split(" ");	
+		switch (splt.length) {
+			case 1: // 1980
+				return new WordWordDecade(splt[0]);
+			case 2: // home 1980
+				return new WordWordDecade(splt[0], split[1]);
+			case 3: // yellow home 1980
+				return new WordWordDecade(splt[0], split[1], splt[2]);
+			default:
+				throw new Exception("Invalid String, parsing failed");
+		}
+	}
+	
 	public String getWord1(){
 		return word1;
 	}
