@@ -1,14 +1,19 @@
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.StringTokenizer;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.IntWritable;
+import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.Mapper;
+import org.apache.hadoop.mapreduce.Partitioner;
 import org.apache.hadoop.mapreduce.Reducer;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
@@ -20,10 +25,89 @@ import org.apache.hadoop.mapreduce.lib.input.SequenceFileInputFormat;
 public class Layer1 {
 
   public static class LayerOneMapper
-       extends Mapper<Object, Text, Text, IntWritable>{
+       extends Mapper<Object, Text, WordWordDecade, IntWritable>{
 
-    private final static IntWritable one = new IntWritable(1);
-    private Text word = new Text();
+    private Set<String> stopWords = new HashSet<String>(Arrays.asList("", "a", "able", "about", "above", "abst", "accordance",
+			"according", "accordingly", "across", "act", "actually", "added", "adj", "affected", "affecting",
+			"affects", "after", "afterwards", "again", "against", "ah", "all", "almost", "alone", "along",
+			"already", "also", "although", "always", "am", "among", "amongst", "an", "and", "announce", "another",
+			"any", "anybody", "anyhow", "anymore", "anyone", "anything", "anyway", "anyways", "anywhere",
+			"apparently", "approximately", "are", "aren", "arent", "arise", "around", "as", "aside", "ask",
+			"asking", "at", "auth", "available", "away", "awfully", "b", "back", "be", "became", "because",
+			"become", "becomes", "becoming", "been", "before", "beforehand", "begin", "beginning", "beginnings",
+			"begins", "behind", "being", "believe", "below", "beside", "besides", "between", "beyond", "biol",
+			"both", "brief", "briefly", "but", "by", "c", "ca", "came", "can", "cannot", "can't", "cause", "causes",
+			"certain", "certainly", "co", "com", "come", "comes", "contain", "containing", "contains", "could",
+			"couldnt", "d", "date", "did", "didn't", "different", "do", "does", "doesn't", "doing", "done", "don't",
+			"down", "downwards", "due", "during", "e", "each", "ed", "edu", "effect", "eg", "eight", "eighty",
+			"either", "else", "elsewhere", "end", "ending", "enough", "especially", "et", "et-al", "etc", "even",
+			"ever", "every", "everybody", "everyone", "everything", "everywhere", "ex", "except", "f", "far", "few",
+			"ff", "fifth", "first", "five", "fix", "followed", "following", "follows", "for", "former", "formerly",
+			"forth", "found", "four", "from", "further", "furthermore", "g", "gave", "get", "gets", "getting",
+			"give", "given", "gives", "giving", "go", "goes", "gone", "got", "gotten", "h", "had", "happens",
+			"hardly", "has", "hasn't", "have", "haven't", "having", "he", "hed", "hence", "her", "here",
+			"hereafter", "hereby", "herein", "heres", "hereupon", "hers", "herself", "hes", "hi", "hid", "him",
+			"himself", "his", "hither", "home", "how", "howbeit", "however", "hundred", "i", "id", "ie", "if",
+			"i'll", "im", "immediate", "immediately", "importance", "important", "in", "inc", "indeed", "index",
+			"information", "instead", "into", "invention", "inward", "is", "isn't", "it", "itd", "it'll", "its",
+			"itself", "i've", "j", "just", "k", "keep	keeps", "kept", "kg", "km", "know", "known", "knows", "l",
+			"largely", "last", "lately", "later", "latter", "latterly", "least", "less", "lest", "let", "lets",
+			"like", "liked", "likely", "line", "little", "'ll", "look", "looking", "looks", "ltd", "m", "made",
+			"mainly", "make", "makes", "many", "may", "maybe", "me", "mean", "means", "meantime", "meanwhile",
+			"merely", "mg", "might", "million", "miss", "ml", "more", "moreover", "most", "mostly", "mr", "mrs",
+			"much", "mug", "must", "my", "myself", "n", "na", "name", "namely", "nay", "nd", "near", "nearly",
+			"necessarily", "necessary", "need", "needs", "neither", "never", "nevertheless", "new", "next", "nine",
+			"ninety", "no", "nobody", "non", "none", "nonetheless", "noone", "nor", "normally", "nos", "not",
+			"noted", "nothing", "now", "nowhere", "o", "obtain", "obtained", "obviously", "of", "off", "often",
+			"oh", "ok", "okay", "old", "omitted", "on", "once", "one", "ones", "only", "onto", "or", "ord", "other",
+			"others", "otherwise", "ought", "our", "ours", "ourselves", "out", "outside", "over", "overall",
+			"owing", "own", "p", "page", "pages", "part", "particular", "particularly", "past", "per", "perhaps",
+			"placed", "please", "plus", "poorly", "possible", "possibly", "potentially", "pp", "predominantly",
+			"present", "previously", "primarily", "probably", "promptly", "proud", "provides", "put", "q", "que",
+			"quickly", "quite", "qv", "r", "ran", "rather", "rd", "re", "readily", "really", "recent", "recently",
+			"ref", "refs", "regarding", "regardless", "regards", "related", "relatively", "research",
+			"respectively", "resulted", "resulting", "results", "right", "run", "s", "said", "same", "saw", "say",
+			"saying", "says", "sec", "section", "see", "seeing", "seem", "seemed", "seeming", "seems", "seen",
+			"self", "selves", "sent", "seven", "several", "shall", "she", "shed", "she'll", "shes", "should",
+			"shouldn't", "show", "showed", "shown", "showns", "shows", "significant", "significantly", "similar",
+			"similarly", "since", "six", "slightly", "so", "some", "somebody", "somehow", "someone", "somethan",
+			"something", "sometime", "sometimes", "somewhat", "somewhere", "soon", "sorry", "specifically",
+			"specified", "specify", "specifying", "still", "stop", "strongly", "sub", "substantially",
+			"successfully", "such", "sufficiently", "suggest", "sup", "sure	t", "take", "taken", "taking", "tell",
+			"tends", "th", "than", "thank", "thanks", "thanx", "that", "that'll", "thats", "that've", "the",
+			"their", "theirs", "them", "themselves", "then", "thence", "there", "thereafter", "thereby", "thered",
+			"therefore", "therein", "there'll", "thereof", "therere", "theres", "thereto", "thereupon", "there've",
+			"these", "they", "theyd", "they'll", "theyre", "they've", "think", "this", "those", "thou", "though",
+			"thoughh", "thousand", "throug", "through", "throughout", "thru", "thus", "til", "tip", "to",
+			"together", "too", "took", "toward", "towards", "tried", "tries", "truly", "try", "trying", "ts",
+			"twice", "two", "u", "un", "under", "unfortunately", "unless", "unlike", "unlikely", "until", "unto",
+			"up", "upon", "ups", "us", "use", "used", "useful", "usefully", "usefulness", "uses", "using",
+			"usually", "v", "value", "various", "'ve", "very", "via", "viz", "vol", "vols", "vs", "w", "want",
+			"wants", "was", "wasnt", "way", "we", "wed", "welcome", "we'll", "went", "were", "werent", "we've",
+			"what", "whatever", "what'll", "whats", "when", "whence", "whenever", "where", "whereafter", "whereas",
+			"whereby", "wherein", "wheres", "whereupon", "wherever", "whether", "which", "while", "whim", "whither",
+			"who", "whod", "whoever", "whole", "who'll", "whom", "whomever", "whos", "whose", "why", "widely",
+			"willing", "wish", "with", "within", "without", "wont", "words", "world", "would", "wouldnt", "www",
+			"x", "y", "yes", "yet", "you", "youd", "you'll", "your", "youre", "yours", "yourself", "yourselves",
+			"you've", "z", "zero","a","about","above","after","again","against","all","am","an",
+			"and","any","are","aren't","as","at","be","because","been","before","being",
+			"below","between","both","but","by","can't","cannot","could","couldn't",
+			"did","didn't","do","does","doesn't","doing","don't","down","during","each",
+			"few","for","from","further","had","hadn't","has","hasn't","have","haven't",
+			"having","he","he'd","he'll","he's","her","here","here's","hers","herself",
+			"him","himself","his","how","how's","i","i'd","i'll","i'm","i've","if","in",
+			"into","is","isn't","it","it's","its","itself","let's","me","more","most",
+			"mustn't","my","myself","no","nor","not","of","off","on","once","only","or",
+			"other","ought","our","ours","ourselves","out","over","own","same","shan't",
+			"she","she'd","she'll","she's","should","shouldn't","so","some","such","than",
+			"that","that's","the","their","theirs","them","themselves","then","there","there's",
+			"these","they","they'd","they'll","they're","they've","this","those","through","to",
+			"too","under","until","up","very","was","wasn't","we","we'd","we'll","we're","we've",
+			"were","weren't","what","what's","when","when's","where","where's","which","while","who",
+			"who's","whom","why","why's","with","won't","would","wouldn't","you","you'd","you'll",
+			"you're","you've","your","yours","yourself","yourselves",
+			"\"","'","^","?",";",":","1",".","-","*","#","$","&","%","!",")","("));
+    
 
     public void map(Object key, Text value, Context context
                     ) throws IOException, InterruptedException {
@@ -33,30 +117,41 @@ public class Layer1 {
     	if (splitted.length < 3) 
     		return;
     	
-    	int year = Integer.parseInt(splitted[1]);
+    	int decade = (Integer.parseInt(splitted[1])/10)*10;
+
     	//ck valid year
-    	if (year < 1900) 
+    	if (decade < 1900) 
     		return;
-    	
-    	Long amount = Long.parseLong(splitted[2]);
-    	
+    	//save amount of ngram
+    	IntWritable amount = new IntWritable((int)Long.parseLong(splitted[2]));
+    	//clean stop words and signs - save valid to validWords
     	String[] ngrams = splitted[0].split(" ");
     	List<String> validWords = Lists.newArrayList();
     	for (int i = 0; i < ngrams.length; i++) {
     		String word = cleanNgrams(ngrams[i]);
-    		if (word.length() > 1 && !isStopWord(word)) {
+    		if (word.length() > 1 && !stopWords.contains(word)) {
 					validWords.add(word);
 				}
-    		
     	}
     	
-    	
-    	
-      StringTokenizer itr = new StringTokenizer(value.toString());
-      while (itr.hasMoreTokens()) {
-        word.set(itr.nextToken());
-        context.write(word, one);
-      }
+    	//split the validWords to <key,val> for the Reducer
+    	if(validWords.size()>0)
+    	{
+			int midWordIndex = (int) Math.ceil(validWords.size() / 2.0);
+			String middleWord = validWords.remove(midWordIndex);
+	
+			//<{*,*,decade},amount>
+			WordWordDecade emptyPair = new WordWordDecade(decade);
+			context.write(emptyPair , amount);
+			
+			for(String word : validWords)
+			{
+				//<{middleWord,wi,decade},amount>
+				// value of c(w,wi) or c(wi,w)
+				WordWordDecade wordPair = new WordWordDecade(middleWord,word,decade);
+				context.write(wordPair , amount);
+			}
+    	}
     }
     
     public String cleanNgrams(String ngram) {
@@ -72,19 +167,34 @@ public class Layer1 {
     
   }
 
+  
+  public static class PartitionerClass extends Partitioner<WordWordDecade, IntWritable>
+	{
+		@Override
+		public int getPartition(WordWordDecade key, IntWritable value, int numPartitions)
+		{
+			int decade = key.getDecade() + 2; 
+			return decade % 12; //12 - num of decade from 1900 to 2020
+		}
+	}
+  
+  
   public static class IntSumReducer
-       extends Reducer<Text,IntWritable,Text,IntWritable> {
-    private IntWritable result = new IntWritable();
+       extends Reducer<WordWordDecade,IntWritable,WordWordDecade,LongWritable> 
+  {
 
-    public void reduce(Text key, Iterable<IntWritable> values,
+    public void reduce(WordWordDecade key, Iterable<IntWritable> values,
                        Context context
-                       ) throws IOException, InterruptedException {
-      int sum = 0;
-      for (IntWritable val : values) {
-        sum += val.get();
-      }
-      result.set(sum);
-      context.write(key, result);
+                       ) throws IOException, InterruptedException 
+    {
+	   long sum = 0;
+	   //sum all val
+	   for (IntWritable val : values) 
+	   {
+	     sum += val.get();
+	   }
+	   //store
+	   context.write(key, new LongWritable(sum));  
     }
   }
 
