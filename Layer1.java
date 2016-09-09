@@ -1,5 +1,6 @@
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -18,13 +19,14 @@ import org.apache.hadoop.mapreduce.Reducer;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 
-import com.google.common.collect.Lists;
+
 
 import org.apache.hadoop.mapreduce.lib.input.SequenceFileInputFormat;
 
+
 public class Layer1 {
 
-  public static class LayerOneMapper
+  public static class Layer1Mapper
        extends Mapper<Object, Text, WordWordDecade, IntWritable>{
 
     private Set<String> stopWords = new HashSet<String>(Arrays.asList("", "a", "able", "about", "above", "abst", "accordance",
@@ -126,7 +128,8 @@ public class Layer1 {
     	IntWritable amount = new IntWritable((int)Long.parseLong(splitted[2]));
     	//clean stop words and signs - save valid to validWords
     	String[] ngrams = splitted[0].split(" ");
-    	List<String> validWords = Lists.newArrayList();
+    	//List<String> validWords = Lists.newArrayList();
+    	ArrayList<String> validWords = new ArrayList<String>();
     	for (int i = 0; i < ngrams.length; i++) {
     		String word = cleanNgrams(ngrams[i]);
     		if (word.length() > 1 && !stopWords.contains(word)) {
@@ -179,7 +182,7 @@ public class Layer1 {
 	}
   
   
-  public static class IntSumReducer
+  public static class LayerOneReducer
        extends Reducer<WordWordDecade,IntWritable,WordWordDecade,LongWritable> 
   {
 
@@ -200,13 +203,13 @@ public class Layer1 {
 
   public static void main(String[] args) throws Exception {
     Configuration conf = new Configuration();
-    Job job = Job.getInstance(conf, "word count");
-    job.setJarByClass(WordCountpro.class);
-    job.setMapperClass(TokenizerMapper.class);
-    job.setCombinerClass(IntSumReducer.class);
-    job.setReducerClass(IntSumReducer.class);
-    job.setOutputKeyClass(Text.class);
-    job.setOutputValueClass(IntWritable.class);
+    Job job = Job.getInstance(conf, "ass2");
+    job.setJarByClass(Layer1.class);
+    job.setMapperClass(Layer1Mapper.class);
+    job.setCombinerClass(LayerOneReducer.class);
+    job.setReducerClass(LayerOneReducer.class);
+    job.setOutputKeyClass(WordWordDecade.class);
+   job.setOutputValueClass(LongWritable.class);
     //job.setInputFormatClass(SequenceFileInputFormat.class);
     FileInputFormat.addInputPath(job, new Path(args[0]));
     FileOutputFormat.setOutputPath(job, new Path(args[1]));
