@@ -46,7 +46,7 @@ import com.amazonaws.services.sqs.model.SendMessageBatchRequestEntry;
 import com.amazonaws.services.sqs.model.SendMessageRequest;
 
 public class AWSHandler {
-
+      //aaa
 	private AmazonEC2 ec2;
 	private AmazonSQS sqs;
 	private AmazonS3 s3;
