@@ -1,3 +1,4 @@
+package DataStructures;
 
 import java.io.DataInput;
 import java.io.DataOutput;
@@ -10,9 +11,18 @@ public class WordWordDecade implements WritableComparable<WordWordDecade> {
 	private String word2;
 	private Integer decade;
 
-	public WordWordDecade(String word1, String word2, Integer year) {
-		this.word1 = word1;
-		this.word2 = word2;
+	/**
+	 * Creates a new Word-Word-Decade key. 
+	 * The former word (Dictionary order) is inserted to word1 field, and the latter to word2 field
+	 * The year is parsed as decade (1979 -> 1970)
+	 * @param wordA a word
+	 * @param wordB a word
+	 * @param year a year
+	 */
+	public WordWordDecade(String wordA, String wordB, Integer year) {
+		int cmp = wordA.compareTo(wordB);
+		this.word1 = cmp < 0 ? wordA : wordB;
+		this.word2 = cmp < 0 ? wordB : wordA;
 		this.decade = (year / 10) * 10; // 1971 -> 1970; 1999 -> 1990
 	}
 
@@ -24,6 +34,9 @@ public class WordWordDecade implements WritableComparable<WordWordDecade> {
 		this("", "", decade);		
 	}
 	
+	/**
+	 * Parse a string to Word-Word-Decade key. The input value is assumed to be valid
+	 */
 	public static WordWordDecade parse(String value) throws Exception {
 		String[] splt = value.split(" ");	
 		switch (splt.length) {
@@ -38,14 +51,37 @@ public class WordWordDecade implements WritableComparable<WordWordDecade> {
 		}
 	}
 	
+	/**
+	 * gets the former word in the key (Dicionary order)
+	 */
 	public String getWord1(){
 		return word1;
 	}
 
+	/**
+	 * clears word1 field
+	 */
+	public void clearWord1(){
+		this.word1 = "@";
+	}
+	
+	/**
+	 * gets the latter word in the key (Dicionary order)
+	 */
 	public String getWord2(){
 		return word2;
 	}
 
+	/**
+	 * clears word1 field
+	 */
+	public void clearWord2(){
+		this.word2 = "@";
+	}
+	
+	/**
+	 * gets the decade
+	 */
 	public int getDecade(){
 		return decade.intValue();
 	}

@@ -3,9 +3,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
-import java.util.StringTokenizer;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
@@ -19,9 +17,7 @@ import org.apache.hadoop.mapreduce.Reducer;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 
-
-
-import org.apache.hadoop.mapreduce.lib.input.SequenceFileInputFormat;
+import DataStructures.WordWordDecade;
 
 
 public class Layer1 {
@@ -209,7 +205,7 @@ public class Layer1 {
     job.setCombinerClass(LayerOneReducer.class);
     job.setReducerClass(LayerOneReducer.class);
     job.setOutputKeyClass(WordWordDecade.class);
-   job.setOutputValueClass(LongWritable.class);
+    job.setOutputValueClass(LongWritable.class);
     //job.setInputFormatClass(SequenceFileInputFormat.class);
     FileInputFormat.addInputPath(job, new Path(args[0]));
     FileOutputFormat.setOutputPath(job, new Path(args[1]));

@@ -12,9 +12,9 @@ import DataStructures.DataStructureBase;
 import DataStructures.WordWordDecade;
 
 
-public class Layer2 {
+public class Layer3 {
 
-	public static class Layer2_Mapper extends Mapper<LongWritable, Text, WordWordDecade, DataStructureBase> {
+	public static class Layer3_Mapper extends Mapper<LongWritable, Text, WordWordDecade, DataStructureBase> {
 
 		protected void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
 			String[] keyValue = value.toString().split("\t");
@@ -38,7 +38,7 @@ public class Layer2 {
 
 	}
 	
-	public static class Layer2_Reducer extends Reducer<WordWordDecade, DataStructureBase, WordWordDecade, DataStructureBase> {
+	public static class Layer3_Reducer extends Reducer<WordWordDecade, DataStructureBase, WordWordDecade, DataStructureBase> {
 		
 		/**
 		 * The values which Layer2 reducer gets is design to have only one DS type of layer 1, which is Long value.
