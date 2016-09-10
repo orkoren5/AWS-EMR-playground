@@ -1,4 +1,4 @@
-java file folder:
+﻿java file folder:
 
 
 /usr/local/hadoop$ cd /home/goo/Desktop/wordcountf/
@@ -34,3 +34,9 @@ https://www.youtube.com/watch?v=ve841JxF_VE
 
 
 javac -classpath $HADOOP_HOME/share/hadoop/common/hadoop-common-2.7.1.jar:$HADOOP_HOME/share/hadoop/mapreduce/hadoop-mapreduce-client-core-2.7.1.jar:$HADOOP_HOME/share/hadoop/common/lib/commons-cli-1.2.jar -d /home/ise/Desktop/WordCount *.java
+
+
+Windows ( for Or)
+
+Run:
+hadoop jar ass2.jar Layer1 /dsp2/eng.corp.test output1

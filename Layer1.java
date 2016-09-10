@@ -107,8 +107,7 @@ public class Layer1 {
 			"\"","'","^","?",";",":","1",".","-","*","#","$","&","%","!",")","("));
     
 
-    public void map(Object key, Text value, Context context
-                    ) throws IOException, InterruptedException {
+    public void map(Object key, Text value, Context context) throws IOException, InterruptedException {
     	//split ngrams year amount and bla bla
     	String[] splitted = value.toString().split("\t");	
     	//if broken line
@@ -158,7 +157,7 @@ public class Layer1 {
 		if (ngram.endsWith("'s"))
 			ngram = ngram.substring(0,ngram.length()-2);
 		ngram = ngram.replaceAll("'","");
-		ngram = ngram.replaceAll("[^a-zA-Z0-9']",""); //same as \\w
+		ngram = ngram.replaceAll("[^a-zA-Z0-9]",""); //same as \\w
 		if ((ngram.length() < 2) || !Character.isLetter(ngram.charAt(0)))
 			ngram = "";
 		return ngram;

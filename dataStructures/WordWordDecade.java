@@ -34,6 +34,9 @@ public class WordWordDecade implements WritableComparable<WordWordDecade> {
 		this("", "", decade);		
 	}
 	
+	public WordWordDecade() {
+		this("", "", 0);		
+	}
 	/**
 	 * Parse a string to Word-Word-Decade key. The input value is assumed to be valid
 	 */

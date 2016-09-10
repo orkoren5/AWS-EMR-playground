@@ -24,7 +24,7 @@ public abstract class DataStructureBase implements Writable {
 	}
 	
 	public static DataStructureBase create(long num1, long num2, long num3) {
-		return new DSLayer3(num1, num2, num3);
+		return new DSLayer3(num1, num2);
 	}
 	
 	public static DataStructureBase create(String word1, String word2, long num1, long num2, long num3) {
