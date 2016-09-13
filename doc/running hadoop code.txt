@@ -39,4 +39,5 @@ javac -classpath $HADOOP_HOME/share/hadoop/common/hadoop-common-2.7.1.jar:$HADOO
 Windows ( for Or)
 
 Run:
-hadoop jar ass2.jar Layer1 /dsp2/eng.corp.test output1
+hadoop jar ass2.jar Layer1 /dsp2 output1
+hdfs dfs -put <path_to_file> /dsp2

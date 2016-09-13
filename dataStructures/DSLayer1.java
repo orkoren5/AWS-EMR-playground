@@ -8,6 +8,10 @@ public class DSLayer1 extends DataStructureBase  {
 	
 	long number;			
 	
+	public DSLayer1() {
+		
+	}
+	
 	public DSLayer1(long number) {			
 		this.number = number;
 	}

@@ -9,6 +9,10 @@ public class DSLayer2 extends DataStructureBase  {
 	String word;
 	long number;			
 	
+	public DSLayer2() {
+		
+	}
+	
 	public DSLayer2(String word, long number) {
 		this.word = word;
 		this.number = number;
@@ -19,9 +23,12 @@ public class DSLayer2 extends DataStructureBase  {
 	}
 	
 	public String getWord() {
-		return this.word;
+		return this.word.equals(EMPTY_STR) ? "" : this.word;
 	}
 	
+	public boolean isWordEmpty() {
+		return this.word.equals(EMPTY_STR);
+	}
 	@Override
 	public void readFields(DataInput arg0) throws IOException {
 		this.word = arg0.readUTF();
@@ -33,5 +40,10 @@ public class DSLayer2 extends DataStructureBase  {
 	public void write(DataOutput arg0) throws IOException {
 		arg0.writeUTF(this.word);
 		arg0.writeLong(this.number);
-	}	
+	}
+	
+	@Override
+	public String toString() {
+		return this.word + " " + this.number;
+	}
 }

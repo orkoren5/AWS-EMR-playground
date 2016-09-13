@@ -11,6 +11,8 @@ import org.apache.hadoop.io.Writable;
 
 public abstract class DataStructureBase implements Writable {
 
+	protected final static String EMPTY_STR = "~"; // Should be char with high ASCII value
+	
 	///////////////////////////////////////////////////
 	// Factory methods
 	///////////////////////////////////////////////////
@@ -23,11 +25,12 @@ public abstract class DataStructureBase implements Writable {
 		return new DSLayer2(word, number);
 	}
 	
-	public static DataStructureBase create(long num1, long num2, long num3) {
+	public static DataStructureBase create(long num1, long num2) {
 		return new DSLayer3(num1, num2);
 	}
 	
 	public static DataStructureBase create(String word1, String word2, long num1, long num2, long num3) {
 		return new DSLayer4(word1, word2, num1, num2, num3);
-	}	
+	}
+
 }

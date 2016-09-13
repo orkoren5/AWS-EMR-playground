@@ -12,6 +12,10 @@ public class DSLayer4 extends DataStructureBase  {
 	long num2;			
 	long num3;
 	
+	public DSLayer4() {
+		
+	}
+	
 	public DSLayer4(String word1, String word2, long num1, long num2, long num3) {
 		this.word1 = word1;
 		this.word2 = word2;

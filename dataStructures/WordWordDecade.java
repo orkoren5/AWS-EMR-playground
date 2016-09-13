@@ -10,10 +10,11 @@ public class WordWordDecade implements WritableComparable<WordWordDecade> {
 	private String word1;
 	private String word2;
 	private Integer decade;
-
+	private final static String EMPTY_STR = "~"; // Should be char with high ASCII value
+	
 	/**
 	 * Creates a new Word-Word-Decade key. 
-	 * The former word (Dictionary order) is inserted to word1 field, and the latter to word2 field
+	 * The former word (Dictionary order) is inserted to word1 field, and the latter to word2 field	 	
 	 * The year is parsed as decade (1979 -> 1970)
 	 * @param wordA a word
 	 * @param wordB a word
@@ -26,29 +27,36 @@ public class WordWordDecade implements WritableComparable<WordWordDecade> {
 		this.decade = (year / 10) * 10; // 1971 -> 1970; 1999 -> 1990
 	}
 
+	/**
+	 * Creates a new Word-Word-Decade key
+	 * The word is inserted to word1
+	 * @param word a word
+	 * @param decade a decade
+	 */
 	public WordWordDecade(String word, Integer decade) {
-		this(word, "", decade);		
+		this(word, EMPTY_STR, decade);		
 	}
 
 	public WordWordDecade(Integer decade) {
-		this("", "", decade);		
+		this(EMPTY_STR, EMPTY_STR, decade);		
 	}
 	
 	public WordWordDecade() {
-		this("", "", 0);		
+		this(EMPTY_STR, EMPTY_STR, 0);		
 	}
 	/**
 	 * Parse a string to Word-Word-Decade key. The input value is assumed to be valid
 	 */
 	public static WordWordDecade parse(String value) throws Exception {
-		String[] splt = value.split(" ");	
+		System.out.println("WWD: value: " + value);
+		String[] splt = value.split(" ");			
 		switch (splt.length) {
 			case 1: // 1980
-				return new WordWordDecade(Integer.getInteger(splt[0]));
+				return new WordWordDecade(Integer.valueOf(splt[0]));
 			case 2: // home 1980
-				return new WordWordDecade(splt[0], Integer.getInteger(splt[1]));
-			case 3: // yellow home 1980
-				return new WordWordDecade(splt[0], splt[1], Integer.getInteger(splt[2]));
+				return new WordWordDecade(splt[0], Integer.valueOf(splt[1]));
+			case 3: // yellow home 1980				
+				return new WordWordDecade(splt[0], splt[1], Integer.valueOf(splt[2]));
 			default:
 				throw new Exception("Invalid String, parsing failed");
 		}
@@ -65,7 +73,7 @@ public class WordWordDecade implements WritableComparable<WordWordDecade> {
 	 * clears word1 field
 	 */
 	public void clearWord1(){
-		this.word1 = "@";
+		this.word1 = EMPTY_STR;
 	}
 	
 	/**
@@ -79,7 +87,7 @@ public class WordWordDecade implements WritableComparable<WordWordDecade> {
 	 * clears word1 field
 	 */
 	public void clearWord2(){
-		this.word2 = "@";
+		this.word2 = EMPTY_STR;
 	}
 	
 	/**
