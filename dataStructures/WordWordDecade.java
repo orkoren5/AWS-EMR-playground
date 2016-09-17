@@ -47,8 +47,7 @@ public class WordWordDecade implements WritableComparable<WordWordDecade> {
 	/**
 	 * Parse a string to Word-Word-Decade key. The input value is assumed to be valid
 	 */
-	public static WordWordDecade parse(String value) throws Exception {
-		System.out.println("WWD: value: " + value);
+	public static WordWordDecade parse(String value) throws Exception {		
 		String[] splt = value.split(" ");			
 		switch (splt.length) {
 			case 1: // 1980
@@ -62,6 +61,17 @@ public class WordWordDecade implements WritableComparable<WordWordDecade> {
 		}
 	}
 	
+	public static WordWordDecade copy(WordWordDecade other) {
+		return new WordWordDecade(other.word1, other.word2, other.decade);		
+	}
+
+	/**
+	 * A couple is a key with both words not empty
+	 * @return Weather this key is a couple 
+	 */
+	public boolean isCouple() {
+		return !(word1.equals(EMPTY_STR) || word2.equals(EMPTY_STR));
+	}
 	/**
 	 * gets the former word in the key (Dicionary order)
 	 */
@@ -73,7 +83,8 @@ public class WordWordDecade implements WritableComparable<WordWordDecade> {
 	 * clears word1 field
 	 */
 	public void clearWord1(){
-		this.word1 = EMPTY_STR;
+		this.word1 = this.word2;
+		this.word2 = EMPTY_STR;
 	}
 	
 	/**

@@ -1,33 +1,30 @@
-often analysis 1991	2
-often described 1991	3
-projects Maven 1954	5
-projects need 1954	6
-projects Maven 1905	8
-projects need 1905	9
-projects Maven 2001	4
-projects need 2001	3
-files All 2007	5
-files up 2007	5
-files to-date 2007	11
-files All 2000	10
-files up 2000	8
-files to-date 2000	6
-often 1991	5
-analysis 1991	2
-described 1991	3
-projects 1954	10
-projects 1905	17
-projects 2001	7
-Maven 1954	5
-Maven 1905	8
-Maven 2001	4
-need 1954	6
-need 1905	9
-files 2007	10
-All 2007	5
-up 2007	5
-to-date 2007	11
-files 2000	24
-All 2000	10
-up 2000	8
-to-date 2000	6
+often analysis 1990	2
+often described 1990	3
+projects Maven 1950	5
+projects need 1950	6
+projects Maven 1900	8
+projects need 1900	9
+projects Maven 2000	4
+projects need 2000	3
+files All 2000	5
+files up 2000	5
+files to-date 2000	11
+often 1990	5
+analysis 1990	2
+described 1990	3
+projects 1950	10
+projects 1900	17
+projects 2000	7
+Maven 1950	5
+Maven 1900	8
+Maven 2000	4
+need 1950	6
+need 1900	9
+files 2000	10
+All 2000	5
+up 2000	5
+to-date 2000	11
+1990	7
+2000	47
+1950	21
+1900	34

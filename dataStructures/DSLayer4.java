@@ -41,5 +41,10 @@ public class DSLayer4 extends DataStructureBase  {
 		arg0.writeLong(this.num1);
 		arg0.writeLong(this.num2);
 		arg0.writeLong(this.num3);
+	}
+
+	@Override
+	public DataStructureBase copy() {
+		return new DSLayer4(this.word1, this.word2, this.num1, this.num2, this.num3);
 	}	
 }

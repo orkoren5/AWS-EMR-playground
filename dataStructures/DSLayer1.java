@@ -29,5 +29,10 @@ public class DSLayer1 extends DataStructureBase  {
 	@Override
 	public void write(DataOutput arg0) throws IOException {			
 		arg0.writeLong(this.number);
+	}
+
+	@Override
+	public DataStructureBase copy() {		
+		return new DSLayer1(this.number);
 	}	
 }

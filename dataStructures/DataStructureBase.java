@@ -33,4 +33,8 @@ public abstract class DataStructureBase implements Writable {
 		return new DSLayer4(word1, word2, num1, num2, num3);
 	}
 
+	/**
+	 * Copy constructor
+	 */
+	public abstract DataStructureBase copy();
 }

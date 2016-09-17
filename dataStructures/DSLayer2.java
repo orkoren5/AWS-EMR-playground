@@ -46,4 +46,9 @@ public class DSLayer2 extends DataStructureBase  {
 	public String toString() {
 		return this.word + " " + this.number;
 	}
+
+	@Override
+	public DataStructureBase copy() {		
+		return new DSLayer2(this.word, this.number);
+	}
 }
