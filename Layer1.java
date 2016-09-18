@@ -7,15 +7,18 @@ import java.util.Set;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.hadoop.mapreduce.Partitioner;
 import org.apache.hadoop.mapreduce.Reducer;
+
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
+
+
+
 
 import DataStructures.WordWordDecade;
 
@@ -23,8 +26,7 @@ import DataStructures.WordWordDecade;
 public class Layer1 {
 
   public static class Layer1Mapper
-       extends Mapper<Object, Text, WordWordDecade, IntWritable>{
-
+       extends Mapper<Object, Text, WordWordDecade, LongWritable>{
     private Set<String> stopWords = new HashSet<String>(Arrays.asList("", "a", "able", "about", "above", "abst", "accordance",
 			"according", "accordingly", "across", "act", "actually", "added", "adj", "affected", "affecting",
 			"affects", "after", "afterwards", "again", "against", "ah", "all", "almost", "alone", "along",
@@ -56,7 +58,7 @@ public class Layer1 {
 			"much", "mug", "must", "my", "myself", "n", "na", "name", "namely", "nay", "nd", "near", "nearly",
 			"necessarily", "necessary", "need", "needs", "neither", "never", "nevertheless", "new", "next", "nine",
 			"ninety", "no", "nobody", "non", "none", "nonetheless", "noone", "nor", "normally", "nos", "not",
-			"noted", "nothing", "now", "nowhere", "o", "obtain", "obtained", "obviously", "of", "off", "often",
+			"noted", "nothing", "now", "nowhere", "o", "obtain", "obtained", "obviously", "of", "off",
 			"oh", "ok", "okay", "old", "omitted", "on", "once", "one", "ones", "only", "onto", "or", "ord", "other",
 			"others", "otherwise", "ought", "our", "ours", "ourselves", "out", "outside", "over", "overall",
 			"owing", "own", "p", "page", "pages", "part", "particular", "particularly", "past", "per", "perhaps",
@@ -108,22 +110,32 @@ public class Layer1 {
     
 
     public void map(Object key, Text value, Context context) throws IOException, InterruptedException {
+
+    	System.out.println("#### MAPPING: " + value.toString());
+    	
     	//split ngrams year amount and bla bla
     	String[] splitted = value.toString().split("\t");	
     	//if broken line
-    	if (splitted.length < 3) 
+    	if (splitted.length < 3)
+    	{ 
+    		System.out.println("splitted.length:" + splitted.length + " < 3: -> return");
     		return;
+    	}
     	
     	int decade = (Integer.parseInt(splitted[1])/10)*10;
-
+    	System.out.println("decade: " + decade);
     	//ck valid year
-    	if (decade < 1900) 
+    	if (decade < 1900)
+    	{
+    		System.out.println("decade < 1900: -> return");
     		return;
+    	}
     	//save amount of ngram
-    	IntWritable amount = new IntWritable((int)Long.parseLong(splitted[2]));
+    	LongWritable amount = new LongWritable((int)Long.parseLong(splitted[2]));
+
     	//clean stop words and signs - save valid to validWords
     	String[] ngrams = splitted[0].split(" ");
-    	//List<String> validWords = Lists.newArrayList();
+
     	ArrayList<String> validWords = new ArrayList<String>();
     	for (int i = 0; i < ngrams.length; i++) {
     		String word = cleanNgrams(ngrams[i]);
@@ -140,14 +152,26 @@ public class Layer1 {
 	
 			//<{*,*,decade},amount>
 			WordWordDecade emptyPair = new WordWordDecade(decade);
+			System.out.println("Mapper Output emptyPair- Key:" + emptyPair.toString() + ", Value:" + amount.toString());
 			context.write(emptyPair , amount);
+			
+			WordWordDecade wordMiddle = new WordWordDecade(middleWord,decade);
+			System.out.println("Mapper Output wordMiddle: Key:" + wordMiddle.toString() + ", Value " + amount.toString());
+			context.write(wordMiddle , amount);
+		
 			
 			for(String word : validWords)
 			{
 				//<{middleWord,wi,decade},amount>
 				// value of c(w,wi) or c(wi,w)
 				WordWordDecade wordPair = new WordWordDecade(middleWord,word,decade);
+				System.out.println("Mapper Output words: Key:" + wordPair.toString() + ", Value " + amount.toString());
 				context.write(wordPair , amount);
+				
+				WordWordDecade wordSingle = new WordWordDecade(word,decade);
+				System.out.println("Mapper Output wordSingle: Key:" + wordSingle.toString() + ", Value " + amount.toString());
+				context.write(wordSingle , amount);
+		
 			}
     	}
     }
@@ -166,37 +190,42 @@ public class Layer1 {
   }
 
   
-  public static class PartitionerClass extends Partitioner<WordWordDecade, IntWritable>
+  public static class PartitionerClass extends Partitioner<WordWordDecade, LongWritable>
 	{
 		@Override
-		public int getPartition(WordWordDecade key, IntWritable value, int numPartitions)
+		public int getPartition(WordWordDecade key, LongWritable value, int numPartitions)
 		{
 			int decade = key.getDecade() + 2; 
-			return decade % 12; //12 - num of decade from 1900 to 2020
+			int decadeToPrint = decade % 12;
+			return decadeToPrint; //12 - num of decade from 1900 to 2020
 		}
 	}
   
   
   public static class LayerOneReducer
-       extends Reducer<WordWordDecade,IntWritable,WordWordDecade,LongWritable> 
+       extends Reducer<WordWordDecade,LongWritable,WordWordDecade,LongWritable> 
   {
 
-    public void reduce(WordWordDecade key, Iterable<IntWritable> values,
+    public void reduce(WordWordDecade key, Iterable<LongWritable> values,
                        Context context
                        ) throws IOException, InterruptedException 
     {
+       System.out.println("$$ Reducing: " + key.toString());	
 	   long sum = 0;
 	   //sum all val
-	   for (IntWritable val : values) 
+	   for (LongWritable val : values) 
 	   {
 	     sum += val.get();
 	   }
 	   //store
-	   context.write(key, new LongWritable(sum));  
+	   LongWritable sumToPrint = new LongWritable(sum);
+	   System.out.println("Writing - Key: " + key.toString() + ", Value: " + sumToPrint.toString());
+	   context.write(key, sumToPrint); 
     }
   }
 
-  public static void main(String[] args) throws Exception {
+  public static void main(String[] args) throws Exception {	 
+	System.out.println("RUNNING L1");	
     Configuration conf = new Configuration();
     Job job = Job.getInstance(conf, "ass2");
     job.setJarByClass(Layer1.class);
