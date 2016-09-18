@@ -1,24 +1,39 @@
 ﻿java file folder:
 
-
+Yoed:
+old:
 /usr/local/hadoop$ cd /home/goo/Desktop/wordcountf/
-/home/goo/Desktop/wordcountf$ javac -classpath $HADOOP_HOME/share/hadoop/common/hadoop-common-2.7.1.jar:$HADOOP_HOME/share/hadoop/mapreduce/hadoop-mapreduce-client-core-2.7.1.jar:$HADOOP_HOME/share/hadoop/common/lib/commons-cli-1.2.jar -d /home/goo/Desktop/wordcountf/ *.java
-
 javac -classpath $HADOOP_HOME/share/hadoop/common/hadoop-common-2.7.1.jar:$HADOOP_HOME/share/hadoop/mapreduce/hadoop-mapreduce-client-core-2.7.1.jar:$HADOOP_HOME/share/hadoop/common/lib/commons-cli-1.2.jar -d /home/goo/Desktop/wordcountf/ *.java
+new:
+cd /home/goo/workspace/dsp2/src
+javac -classpath $HADOOP_HOME/share/hadoop/common/hadoop-common-2.7.1.jar:$HADOOP_HOME/share/hadoop/mapreduce/hadoop-mapreduce-client-core-2.7.1.jar:$HADOOP_HOME/share/hadoop/common/lib/commons-cli-1.2.jar -d /home/goo/workspace/dsp2/src/ *.java
 
 
-
+old:
 jar -cvf wordcountj.jar -C /home/goo/Desktop/wordcountf/wordcountc .
+new:
+jar -cvf Layer1.jar -C /home/goo/workspace/dsp2/src .
 
 hadoop folder: 
 cd /usr/local/hadoop/
+
+old:
 /usr/local/hadoop/bin/hadoop jar /home/goo/Desktop/wordcountf/wordcountj.jar WordCountpro /user/inputdata/ outputwc10
+new:
+/usr/local/hadoop/bin/hadoop jar /home/goo/workspace/dsp2/src/Layer1.jar Layer1 /user/inputdata/ outputwc11
+new with Driver.java (make sure that "int serialNum"++ in Line 21 every run):
+/usr/local/hadoop/bin/hadoop jar /home/goo/workspace/dsp2/bin/ass2.jar /user/inputdata/ outputwc
+
 
 add input:
 
 bin/hdfs dfs -put '/home/goo/Desktop/inputdata' /user
 
+bin/hdfs dfs -put '/home/goo/workspace/dsp2/src/inputdata/eng.corp.test' /user
+eng.corp.test
 
+del:
+bin/hdfs dfs -rm /user/inputdata/test.txt
 
 
 http://localhost:50070
