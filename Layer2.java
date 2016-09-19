@@ -107,7 +107,7 @@ public class Layer2 {
 			System.out.println("totalNumberOfWord1: " + String.valueOf(totalNumberOfWord1));			
 			for (DSLayer2 value : cacheList) {				
 				WordWordDecade new_wwdKey = new WordWordDecade(key.getWord1(), value.getWord(), key.getDecade());
-				DataStructureBase new_value = DataStructureBase.create(value.getNumber(), totalNumberOfWord1);
+				DataStructureBase new_value = DataStructureBase.create(totalNumberOfWord1, value.getNumber());
 				System.out.println("Writing - Key: " + new_wwdKey.toString() + ", Value: " + new_value.toString());
 				mos.write("layer3", new_wwdKey, new_value);
 			}	
@@ -115,7 +115,7 @@ public class Layer2 {
 			// If the key had only one value - then that key had only a decade in it (by design)
 			if (cacheList.isEmpty()) {
 				WordWordDecade new_wwdKey = new WordWordDecade(key.getDecade());
-				DataStructureBase new_value = DataStructureBase.create(0, totalNumberOfWord1);
+				DataStructureBase new_value = DataStructureBase.create(totalNumberOfWord1, 0);
 				System.out.println("Writing - Key: " + new_wwdKey.toString() + ", Value: " + new_value.toString());
 				mos.write("layer3", new_wwdKey, new_value);
 			}

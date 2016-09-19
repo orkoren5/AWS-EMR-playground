@@ -7,7 +7,11 @@ import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
+import org.apache.hadoop.mapreduce.lib.output.MultipleOutputs;
+import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 
+import DataStructures.DSLayer2;
+import DataStructures.DSLayer3;
 import DataStructures.WordWordDecade;
 
 
@@ -20,10 +24,10 @@ public class Driver
 		
 		int serialNum = 56;
 		
-		Job jobLayer1 = initLayer1Job(args[0], args[1] + serialNum);
+		Job jobLayer1 = initLayer1Job(args[0], args[1]);
 		jobLayer1.waitForCompletion(true);
 		
-		Job jobLayer2 = initLayer2Job(args[1] + serialNum , args[1] + serialNum + "b");
+		Job jobLayer2 = initLayer2Job(args[1], args[1] + "b");
 		jobLayer2.waitForCompletion(true);
 		
 		//Job jobLayer3 = initLayer2Job();
@@ -65,8 +69,12 @@ public class Driver
 	    job.setMapperClass(Layer2.Layer2_Mapper.class);
 	    job.setCombinerClass(Layer2.Layer2_Reducer.class);
 	    job.setReducerClass(Layer2.Layer2_Reducer.class);
+	    MultipleOutputs.addNamedOutput(job, "layer2", TextOutputFormat.class,
+	    		 WordWordDecade.class, DSLayer2.class);
+	    MultipleOutputs.addNamedOutput(job, "layer3", TextOutputFormat.class,
+	    		 WordWordDecade.class, DSLayer3.class);
 	    job.setOutputKeyClass(WordWordDecade.class);
-	    job.setOutputValueClass(LongWritable.class);
+	    job.setOutputValueClass(DSLayer2.class);
 	    //job.setInputFormatClass(SequenceFileInputFormat.class);
 	    FileInputFormat.addInputPath(job, new Path(input));
 	    FileOutputFormat.setOutputPath(job, new Path(output));
