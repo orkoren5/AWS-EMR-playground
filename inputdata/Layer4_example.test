@@ -1,0 +1,31 @@
+-------- input to mapper -----------
+key: <Word1 Word2 Decade> value: <PairCount Word1Count Word2Count>
+
+Maven projects 1900	8 8 10
+need projects 1900	9 9 20
+Maven projects 1920	17 8 30
+need projects 1920	17 9 100
+~ ~ 1900	5000 0 0 // sum of all words in decade 1900
+~ ~ 1920	6000 0 0
+...
+
+------- mapper output --------------
+key: <~ ~ Decade> value: <Word1 Word2 PairCount Word1Count Word2Count>
+~ ~ 1900	Maven projects 8 8 10
+~ ~ 1900	need projects 9 9 20
+~ ~ 1920	need projects 17 9 100
+~ ~ 1920	Maven projects 17 8 30
+~ ~ 1900	~ ~ 5000 0 0
+~ ~ 1920	~ ~ 6000 0 0
+...
+
+-------- reducer input ---------------
+<same as mapper output>
+
+-------- reducer output --------------
+key: <Word1 Word2 Decade> value: <PairCount Word1Count Word2Count PMI>
+Maven projects 1900 8 8 10 1.948573
+need projects 1900	9 9 20 0.494942
+Maven projects 1920	17 8 30 0.999999
+need projects 1920	17 9 100 1.6180000
+...

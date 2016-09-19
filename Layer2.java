@@ -42,11 +42,11 @@ public class Layer2 {
 			String str_wwdKey = keyValue[0];
 			String count = keyValue[1];			
 			WordWordDecade wwdKey = null;
-			WordWordDecade wwdKey2 = null;
+			WordWordDecade wwdKeyCopy = null;
 			
 			try {
 				wwdKey = WordWordDecade.parse(str_wwdKey);
-				wwdKey2 = WordWordDecade.copy(wwdKey);
+				wwdKeyCopy = WordWordDecade.copy(wwdKey);
 			}
 			catch( Exception ex) {
 				System.out.println("EXCEPTION: " + ex);				
@@ -58,14 +58,14 @@ public class Layer2 {
 			wwdKey.clearWord2();
 			System.out.println("Mapper Output: Key:" + wwdKey.toString() + ", Value " + ds1.toString());			
 			context.write(wwdKey, ds1);
-			mos.write("layer2", wwdKey, ds1);
+			//mos.write("layer2", wwdKey, ds1);
 			
-			if (wwdKey2.isCouple()) {
-				DataStructureBase ds2 = DataStructureBase.create(wwdKey2.getWord1(), Long.parseLong(count));
-				wwdKey2.clearWord1();
-				System.out.println("Mapper Output: Key:" + wwdKey2.toString() + ", Value " + ds2.toString());
-				context.write(wwdKey2, ds2);
-				mos.write("layer2", wwdKey2, ds2);
+			if (wwdKeyCopy.isCouple()) {
+				DataStructureBase ds2 = DataStructureBase.create(wwdKeyCopy.getWord1(), Long.parseLong(count));
+				wwdKeyCopy.clearWord1();
+				System.out.println("Mapper Output: Key:" + wwdKeyCopy.toString() + ", Value " + ds2.toString());
+				context.write(wwdKeyCopy, ds2);
+				//mos.write("layer2", wwdKey2, ds2);
 			}
 		}
 
