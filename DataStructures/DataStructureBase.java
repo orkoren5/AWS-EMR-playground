@@ -34,7 +34,7 @@ public abstract class DataStructureBase implements Writable {
 	}
 
 	/**
-	 * Copy constructor
+	 * Creates a copy of this data structure
 	 */
 	public abstract DataStructureBase copy();
 }
