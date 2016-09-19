@@ -1,6 +1,5 @@
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.apache.hadoop.conf.Configuration;
@@ -28,7 +27,7 @@ public class Layer2 {
 		private MultipleOutputs<WordWordDecade, DataStructureBase> mos;
 		 
 		public void setup(Context context) {
-			System.out.println("--------------MAPPER SETUP-----------");
+			System.out.println("--------------MAPPER SETUP-----------&&&&&");
 			 mos = new MultipleOutputs<WordWordDecade, DataStructureBase>(context);
 		}
 		
