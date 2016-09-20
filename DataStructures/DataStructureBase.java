@@ -1,13 +1,5 @@
 package DataStructures;
 
-/**
- * MyDataStructure is a data structure that contains 3 numbers, and 2 strings 
- * It is easier to pass this DS in mappers/reducers output
- * @author Or, Yoed
- *
- */
-
-import org.apache.commons.lang.StringUtils;
 import org.apache.hadoop.io.Writable;
 
 public abstract class DataStructureBase implements Writable {
