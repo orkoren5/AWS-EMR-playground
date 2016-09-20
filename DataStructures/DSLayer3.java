@@ -31,6 +31,14 @@ public class DSLayer3 extends DataStructureBase  {
 		arg0.writeLong(this.wordSum);
 	}	
 	
+	public long getPairSum() {
+		return this.pairSum;
+	}
+
+	public long getWordSum() {
+		return this.wordSum;
+	}
+	
 	public String toString() {
 		return wordSum + " " + String.valueOf(pairSum);
 	}

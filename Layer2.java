@@ -37,15 +37,15 @@ public class Layer2 {
 		}
 		protected void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
 			System.out.println("MAPPING: " + value);
-			String[] keyValue = value.toString().split("\t");
-			String str_wwdKey = keyValue[0];
-			String count = keyValue[1];			
+			String[] keyValue = value.toString().split("\t");			
+			long count = 0;			
 			WordWordDecade wwdKey = null;
 			WordWordDecade wwdKeyCopy = null;
 			
 			try {
-				wwdKey = WordWordDecade.parse(str_wwdKey);
+				wwdKey = WordWordDecade.parse(keyValue[0]);
 				wwdKeyCopy = WordWordDecade.copy(wwdKey);
+				count = Long.parseLong(keyValue[1]);
 			}
 			catch( Exception ex) {
 				System.out.println("EXCEPTION: " + ex);				
@@ -53,14 +53,14 @@ public class Layer2 {
 				return;
 			}
 			
-			DataStructureBase ds1 = DataStructureBase.create(wwdKey.getWord2(), Long.parseLong(count));
+			DataStructureBase ds1 = DataStructureBase.create(wwdKey.getWord2(), count);
 			wwdKey.clearWord2();
 			System.out.println("Mapper Output: Key:" + wwdKey.toString() + ", Value " + ds1.toString());			
 			context.write(wwdKey, ds1);
 			//mos.write("layer2", wwdKey, ds1);
 			
 			if (wwdKeyCopy.isCouple()) {
-				DataStructureBase ds2 = DataStructureBase.create(wwdKeyCopy.getWord1(), Long.parseLong(count));
+				DataStructureBase ds2 = DataStructureBase.create(wwdKeyCopy.getWord1(), count);
 				wwdKeyCopy.clearWord1();
 				System.out.println("Mapper Output: Key:" + wwdKeyCopy.toString() + ", Value " + ds2.toString());
 				context.write(wwdKeyCopy, ds2);
@@ -109,7 +109,8 @@ public class Layer2 {
 				WordWordDecade new_wwdKey = new WordWordDecade(key.getWord1(), value.getWord(), key.getDecade());
 				DataStructureBase new_value = DataStructureBase.create(totalNumberOfWord1, value.getNumber());
 				System.out.println("Writing - Key: " + new_wwdKey.toString() + ", Value: " + new_value.toString());
-				mos.write("layer3", new_wwdKey, new_value);
+				//mos.write("layer3", new_wwdKey, new_value);
+				context.write(new_wwdKey, new_value);
 			}	
 			
 			// If the key had only one value - then that key had only a decade in it (by design)
@@ -117,7 +118,8 @@ public class Layer2 {
 				WordWordDecade new_wwdKey = new WordWordDecade(key.getDecade());
 				DataStructureBase new_value = DataStructureBase.create(totalNumberOfWord1, 0);
 				System.out.println("Writing - Key: " + new_wwdKey.toString() + ", Value: " + new_value.toString());
-				mos.write("layer3", new_wwdKey, new_value);
+				//mos.write("layer3", new_wwdKey, new_value);
+				context.write(new_wwdKey, new_value);
 			}
 		}
 	}
@@ -127,18 +129,20 @@ public class Layer2 {
 		    Configuration conf = new Configuration();
 		    Job job = Job.getInstance(conf, "ass2");
 		    job.setJarByClass(Layer2.class);
-		    job.setMapperClass(Layer2_Mapper.class);
-		    job.setCombinerClass(Layer2_Reducer.class);
-		    job.setReducerClass(Layer2_Reducer.class);
-		    MultipleOutputs.addNamedOutput(job, "layer2", TextOutputFormat.class,
-		    		 WordWordDecade.class, DSLayer2.class);
-		    MultipleOutputs.addNamedOutput(job, "layer3", TextOutputFormat.class,
-		    		 WordWordDecade.class, DSLayer3.class);
+		    job.setMapperClass(Layer2.Layer2_Mapper.class);
+		    //job.setCombinerClass(Layer2.Layer2_Reducer.class);
+		    job.setReducerClass(Layer2.Layer2_Reducer.class);
+//		    MultipleOutputs.addNamedOutput(job, "layer2", TextOutputFormat.class,
+//		    		 WordWordDecade.class, DSLayer2.class);
+//		    MultipleOutputs.addNamedOutput(job, "layer3", TextOutputFormat.class,
+//		    		 WordWordDecade.class, DSLayer3.class);
+		    job.setMapOutputKeyClass(WordWordDecade.class);
+		    job.setMapOutputValueClass(DSLayer2.class);
 		    job.setOutputKeyClass(WordWordDecade.class);
-		    job.setOutputValueClass(DSLayer2.class);
+		    job.setOutputValueClass(DSLayer3.class);
 		    //job.setInputFormatClass(SequenceFileInputFormat.class);
 		    FileInputFormat.addInputPath(job, new Path(args[0]));
 		    FileOutputFormat.setOutputPath(job, new Path(args[1]));
 		    System.exit(job.waitForCompletion(true) ? 0 : 1);
-		  }
+	  }
 }
