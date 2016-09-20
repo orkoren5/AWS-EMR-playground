@@ -20,7 +20,7 @@ import DataStructures.WordWordDecade;
 
 public class Layer4 
 {
-	public static class Layer4_Mapper extends Mapper<WordWordDecade, Text, WordWordDecade, DataStructureBase> {
+	public static class Layer4_Mapper extends Mapper<LongWritable, Text, WordWordDecade, DataStructureBase> {
 		
 	/*	private MultipleOutputs<WordWordDecade, DataStructureBase> mos;
 		 
@@ -34,19 +34,38 @@ public class Layer4
 				mos.close();
 		}*/
 		
-		protected void map(WordWordDecade key, DataStructures.DSLayer4 value, Context context) throws IOException, InterruptedException {
-			//System.out.println("MAPPING: " + value);
-
-			DataStructureBase ds5 = DataStructureBase.create(key.getWord1(),key.getWord2(),value.getPairSum(), value.getWord1Sum(), value.getWord2Sum());
-			key.clearWord1();
-			key.clearWord2();
+		protected void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
+			System.out.println("MAPPING: " + value);
+			
+			String[] keyValue = value.toString().split("\t");
+			String keys = keyValue[0];
+			String Values = keyValue[1];
+			
+			
+			String[] sValue = Values.toString().split(" ");
+			String PairCount = sValue[0];
+			String Word1Count = sValue[1];
+			String Word2Count = sValue[2];
+				
+			WordWordDecade wwdKey = null;
+			
+			try {
+				wwdKey = WordWordDecade.parse(keys);
+			}
+			catch( Exception ex) {
+				System.out.println("EXCEPTION: " + ex);				
+				System.out.println("EXCEPTION: " + ex.getStackTrace().toString());
+				return;
+			}
+			DataStructureBase ds5 = DataStructureBase.create(wwdKey.getWord1(),wwdKey.getWord2(),Long.parseLong(PairCount), Long.parseLong(Word1Count), Long.parseLong(Word2Count));
 			System.out.println("Mapper Output: Key:" + key.toString() + ", Value " + ds5.toString());			
-			context.write(key, ds5);
-			//mos.write("layer2", wwdKey, ds1);		
+			wwdKey.clearWord1();
+			wwdKey.clearWord2();
+			context.write(wwdKey, ds5);		
 		}
 	}
 	
-	public static class Layer4_Reducer extends Reducer<WordWordDecade, DataStructureBase, WordWordDecade, DataStructureBase> {
+	public static class Layer4_Reducer extends Reducer<WordWordDecade, DSLayer5, WordWordDecade, DSLayer6> {
 		
 		/*private MultipleOutputs<WordWordDecade, DataStructureBase> mos;
 		 
