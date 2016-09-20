@@ -131,7 +131,7 @@ public class Layer1 {
     		return;
     	}
     	//save amount of ngram
-    	LongWritable amount = new LongWritable((int)Long.parseLong(splitted[2]));
+    	long ngram_amoung = Long.parseLong(splitted[2]);    	
 
     	//clean stop words and signs - save valid to validWords
     	String[] ngrams = splitted[0].split(" ");
@@ -145,9 +145,11 @@ public class Layer1 {
     	}
     	
     	//split the validWords to <key,val> for the Reducer
-    	if(validWords.size()>0)
+    	int size = validWords.size();
+    	if(size > 0)
     	{
-			int midWordIndex = (int) Math.ceil(validWords.size() / 2.0);
+    		LongWritable amount = new LongWritable(ngram_amoung*size);
+			int midWordIndex = (int) Math.ceil(size / 2.0);
 			String middleWord = validWords.remove(midWordIndex);
 	
 			//<{*,*,decade},amount>
