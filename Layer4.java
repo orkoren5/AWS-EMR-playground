@@ -4,6 +4,8 @@ import java.util.List;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.io.DoubleWritable;
+import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.Mapper;
@@ -11,8 +13,8 @@ import org.apache.hadoop.mapreduce.Reducer;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 
+import DataStructures.DSLayer4;
 import DataStructures.DSLayer5;
-import DataStructures.DSLayer6;
 import DataStructures.DataStructureBase;
 import DataStructures.WordWordDecade;
 
@@ -20,51 +22,36 @@ import DataStructures.WordWordDecade;
 public class Layer4 
 {
 	public static class Layer4_Mapper extends Mapper<LongWritable, Text, WordWordDecade, DataStructureBase> {
-		
-	/*	private MultipleOutputs<WordWordDecade, DataStructureBase> mos;
-		 
-		public void setup(Context context) {
-			System.out.println("--------------MAPPER SETUP-----------&&&&&");
-			 mos = new MultipleOutputs<WordWordDecade, DataStructureBase>(context);
-		}
-		
-		public void cleanup(Context context) throws IOException, InterruptedException {
-				System.out.println("--------------MAPPER CLEANUP-----------");
-				mos.close();
-		}*/
-		
+	
 		protected void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
 			System.out.println("MAPPING: " + value);
 			
 			String[] keyValue = value.toString().split("\t");
-			String keys = keyValue[0];
-			String Values = keyValue[1];
-			
-			
-			String[] sValue = Values.toString().split(" ");
-			String PairCount = sValue[0];
-			String Word1Count = sValue[1];
-			String Word2Count = sValue[2];
+			String str_wwdKey = keyValue[0];
+			String str_value = keyValue[1];
 				
 			WordWordDecade wwdKey = null;
+			DataStructureBase ds = null;
 			
 			try {
-				wwdKey = WordWordDecade.parse(keys);
+				wwdKey = WordWordDecade.parse(str_wwdKey);
+				ds = DataStructureBase.parse(str_value);
 			}
 			catch( Exception ex) {
 				System.out.println("EXCEPTION: " + ex);				
 				System.out.println("EXCEPTION: " + ex.getStackTrace().toString());
 				return;
 			}
-			DataStructureBase ds5 = DataStructureBase.create(wwdKey.getWord1(),wwdKey.getWord2(),Long.parseLong(PairCount), Long.parseLong(Word1Count), Long.parseLong(Word2Count));
-			System.out.println("Mapper Output: Key:" + key.toString() + ", Value " + ds5.toString());			
+			DSLayer4 ds4 = (DSLayer4) ds;
+			DataStructureBase ds5 = DataStructureBase.create(wwdKey.getWord1(),wwdKey.getWord2(),ds4.getPairSum() , ds4.getWord1Sum(), ds4.getWord2Sum());			
 			wwdKey.clearWord1();
-			wwdKey.clearWord2();
+			wwdKey.clearWord1();//word 2 clear
+			System.out.println("Mapper Output: Key:" + wwdKey.toString() + ", Value:" + ds5.toString());
 			context.write(wwdKey, ds5);		
 		}
 	}
 	
-	public static class Layer4_Reducer extends Reducer<WordWordDecade, DSLayer5, WordWordDecade, DSLayer6> {
+	public static class Layer4_Reducer extends Reducer<WordWordDecade, DSLayer5, WordWordDecade, DoubleWritable> {
 		
 		/*private MultipleOutputs<WordWordDecade, DataStructureBase> mos;
 		 
@@ -82,13 +69,14 @@ public class Layer4
 		long getTheOnlyNumberValue(Iterable<DSLayer5> values, List<DSLayer5> cacheList) {
 			long retVal = 0;
 			for (DSLayer5 value : values) {	
-				System.out.println("---- " + value.toString() + ", is Empty: " + String.valueOf(value.isWord1Empty()));
+				System.out.println("---- " + value.toString() + ", is Empty: " + value.isWord1Empty());
 				if (value.isWord1Empty()) {					
-					retVal = value.getNum3();
+					retVal = value.getNum1();
 				} else {
 					cacheList.add((DSLayer5)value.copy());
 				}
 			}
+			System.out.println("---- retVal: " + String.valueOf(retVal));
 			return retVal;
 		}
 		
@@ -106,9 +94,12 @@ public class Layer4
 				WordWordDecade new_wwdKey = new WordWordDecade(value.getWord1(), value.getWord2(), key.getDecade());
 				double pmiCalc = Math.log((value.getNum1()*totalNumberInDecade)/(value.getNum2()*value.getNum3()));
 				//DoubleWritable pmi = new DoubleWritable(pmiCalc);
-				DataStructureBase new_value = DataStructureBase.create(value.getNum1(), value.getNum2(), value.getNum3(),totalNumberInDecade, pmiCalc);
-				System.out.println("Writing - Key: " + new_wwdKey.toString() + ", Value: " + new_value.toString());
-				context.write(new_wwdKey, new_value);
+				//DataStructureBase new_value = DataStructureBase.create(value.getNum1(), value.getNum2(), value.getNum3(),totalNumberInDecade, pmiCalc);
+				//System.out.println("Writing - Key: " + new_wwdKey.toString() + ", Value: " + new_value.toString());
+				//context.write(new_wwdKey, new_value);
+				DoubleWritable pmiCalcW = new DoubleWritable(pmiCalc);
+				System.out.println("Writing - Key: " + new_wwdKey.toString() + ", Value: " + pmiCalcW.toString());
+				context.write(new_wwdKey, pmiCalcW);
 				//mos.write("layer3", new_wwdKey, new_value);
 			}	
 			
@@ -129,10 +120,12 @@ public class Layer4
 		    Job job = Job.getInstance(conf, "ass2");
 		    job.setJarByClass(Layer4.class);
 		    job.setMapperClass(Layer4_Mapper.class);
-		    job.setCombinerClass(Layer4_Reducer.class);
+		   // job.setCombinerClass(Layer4_Reducer.class);
 		    job.setReducerClass(Layer4_Reducer.class);
+		    job.setMapOutputKeyClass(WordWordDecade.class);
+		    job.setMapOutputValueClass(DSLayer5.class);
 		    job.setOutputKeyClass(WordWordDecade.class);
-		    job.setOutputValueClass(DSLayer6.class);
+		    job.setOutputValueClass(DoubleWritable.class);
 		    //job.setInputFormatClass(SequenceFileInputFormat.class);
 		    FileInputFormat.addInputPath(job, new Path(args[0]));
 		    FileOutputFormat.setOutputPath(job, new Path(args[1]));

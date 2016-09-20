@@ -12,7 +12,6 @@ import org.apache.hadoop.mapreduce.Reducer;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.mapreduce.lib.output.MultipleOutputs;
-import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 
 import DataStructures.DSLayer2;
 import DataStructures.DSLayer3;
@@ -72,12 +71,12 @@ public class Layer2 {
 	
 	public static class Layer2_Reducer extends Reducer<WordWordDecade, DSLayer2, WordWordDecade, DataStructureBase> {
 		
-		private MultipleOutputs<WordWordDecade, DataStructureBase> mos;
+		//private MultipleOutputs<WordWordDecade, DataStructureBase> mos;
 		 
-		public void setup(Context context) {
-			System.out.println("--------------REDUCER SETUP-----------");
-			 mos = new MultipleOutputs<WordWordDecade, DataStructureBase>(context);
-		}
+		//public void setup(Context context) {
+		//	System.out.println("--------------REDUCER SETUP-----------");
+		//	 mos = new MultipleOutputs<WordWordDecade, DataStructureBase>(context);
+		//}
 		
 		/**
 		 * The values which the Reducer gets is designed to consist of only one value with an empty word.

@@ -50,7 +50,9 @@ public abstract class DataStructureBase implements Writable {
 				catch(NumberFormatException nfe) // e.g home 1000  
 				{  
 					return DataStructureBase.create(splt[0], Long.valueOf(splt[1]));  
-				}  								
+				} 
+			case 3:
+				return DataStructureBase.create(Long.valueOf(splt[0]), Long.valueOf(splt[1]), Long.valueOf(splt[2]));
 			case 4:		
 				return DataStructureBase.create(Long.valueOf(splt[0]), Long.valueOf(splt[1]));
 			default:

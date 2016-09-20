@@ -48,12 +48,12 @@ public class Layer3 {
 	
 	public static class Layer3_Reducer extends Reducer<WordWordDecade, DSLayer3, WordWordDecade, DataStructureBase> {
 			
-		private MultipleOutputs<WordWordDecade, DataStructureBase> mos;
+		/*private MultipleOutputs<WordWordDecade, DataStructureBase> mos;
 		 
 		public void setup(Context context) {
 			System.out.println("--------------REDUCER SETUP-----------");
 			 mos = new MultipleOutputs<WordWordDecade, DataStructureBase>(context);
-		}
+		}*/
 		
 		public void reduce(WordWordDecade key, Iterable<DSLayer3> values, Context context)
 				throws IOException, InterruptedException {
