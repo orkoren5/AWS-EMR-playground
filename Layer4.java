@@ -71,7 +71,7 @@ public class Layer4
 			for (DSLayer5 value : values) {	
 				System.out.println("---- " + value.toString() + ", is Empty: " + value.isWord1Empty());
 				if (value.isWord1Empty()) {					
-					retVal = value.getNum1();
+					retVal = value.getNum2();
 				} else {
 					cacheList.add((DSLayer5)value.copy());
 				}
@@ -92,7 +92,9 @@ public class Layer4
 			System.out.println("totalNumberInDecade: " + String.valueOf(totalNumberInDecade));			
 			for (DSLayer5 value : cacheList) {				
 				WordWordDecade new_wwdKey = new WordWordDecade(value.getWord1(), value.getWord2(), key.getDecade());
-				double pmiCalc = Math.log((value.getNum1()*totalNumberInDecade)/(value.getNum2()*value.getNum3()));
+				//double pmiCalc = Math.log((value.getNum1()*totalNumberInDecade)/(value.getNum2()*value.getNum3()));
+				double pmiCalc = Math.log(value.getNum1()) + Math.log(totalNumberInDecade) - Math.log(value.getNum2()) - Math.log(value.getNum3());
+				
 				//DoubleWritable pmi = new DoubleWritable(pmiCalc);
 				//DataStructureBase new_value = DataStructureBase.create(value.getNum1(), value.getNum2(), value.getNum3(),totalNumberInDecade, pmiCalc);
 				//System.out.println("Writing - Key: " + new_wwdKey.toString() + ", Value: " + new_value.toString());

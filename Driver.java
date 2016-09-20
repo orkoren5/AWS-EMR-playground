@@ -3,6 +3,7 @@ import java.io.IOException;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.io.DoubleWritable;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
@@ -11,6 +12,7 @@ import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import DataStructures.DSLayer2;
 import DataStructures.DSLayer3;
 import DataStructures.DSLayer4;
+import DataStructures.DSLayer5;
 import DataStructures.WordWordDecade;
 
 public class Driver 
@@ -29,6 +31,9 @@ public class Driver
 		
 		Job jobLayer3 = initLayer3Job(outputFolder + "b", outputFolder + "c");
 		jobLayer3.waitForCompletion(true);
+		
+		Job jobLayer4 = initLayer4Job(outputFolder + "c", outputFolder + "d");
+		jobLayer4.waitForCompletion(true);
 
 
 		System.exit(0);
@@ -89,7 +94,7 @@ public class Driver
 		System.out.println("init Layer3 job");
 		
 	    Configuration conf = new Configuration();
-	    Job job = Job.getInstance(conf, "ass3");
+	    Job job = Job.getInstance(conf, "ass2");
 	    job.setJarByClass(Layer3.class);
 	    job.setMapperClass(Layer3.Layer3_Mapper.class);
 	    //job.setCombinerClass(Layer3.Layer3_Reducer.class);
@@ -107,6 +112,34 @@ public class Driver
 	    FileOutputFormat.setOutputPath(job, new Path(output));
 	    
 	    System.out.println("job Layer3 created");
+	    
+	    return job;
+	    	
+	}
+	
+	public static Job initLayer4Job(String input, String output) throws IOException 
+	{
+		System.out.println("init Layer4 job");
+		
+	    Configuration conf = new Configuration();
+	    Job job = Job.getInstance(conf, "ass2");
+	    job.setJarByClass(Layer4.class);
+	    job.setMapperClass(Layer4.Layer4_Mapper.class);
+	    //job.setCombinerClass(Layer3.Layer3_Reducer.class);
+	    job.setReducerClass(Layer4.Layer4_Reducer.class);
+//	    MultipleOutputs.addNamedOutput(job, "layer3", TextOutputFormat.class,
+//	    		 WordWordDecade.class, DSLayer3.class);
+//	    MultipleOutputs.addNamedOutput(job, "layer4", TextOutputFormat.class,
+//	    		 WordWordDecade.class, DSLayer4.class);
+	    job.setMapOutputKeyClass(WordWordDecade.class);
+	    job.setMapOutputValueClass(DSLayer5.class);
+	    job.setOutputKeyClass(WordWordDecade.class);
+	    job.setOutputValueClass(DoubleWritable.class);
+	    //job.setInputFormatClass(SequenceFileInputFormat.class);
+	    FileInputFormat.addInputPath(job, new Path(input));
+	    FileOutputFormat.setOutputPath(job, new Path(output));
+	    
+	    System.out.println("job Layer4 created");
 	    
 	    return job;
 	    	
