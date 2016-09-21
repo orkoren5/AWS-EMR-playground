@@ -15,6 +15,7 @@ import org.apache.hadoop.mapreduce.Partitioner;
 import org.apache.hadoop.mapreduce.Reducer;
 
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
+import org.apache.hadoop.mapreduce.lib.input.SequenceFileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 
 
@@ -143,6 +144,7 @@ public class Layer1 {
 					validWords.add(word);
 				}
     	}
+    	System.out.println("Valid words: " + validWords);
     	
     	//split the validWords to <key,val> for the Reducer
     	int size = validWords.size();
@@ -236,7 +238,7 @@ public class Layer1 {
     job.setReducerClass(LayerOneReducer.class);
     job.setOutputKeyClass(WordWordDecade.class);
     job.setOutputValueClass(LongWritable.class);
-    //job.setInputFormatClass(SequenceFileInputFormat.class);
+    job.setInputFormatClass(SequenceFileInputFormat.class);
     FileInputFormat.addInputPath(job, new Path(args[0]));
     FileOutputFormat.setOutputPath(job, new Path(args[1]));
     System.exit(job.waitForCompletion(true) ? 0 : 1);
