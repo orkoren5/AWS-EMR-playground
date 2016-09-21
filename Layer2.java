@@ -36,7 +36,7 @@ public class Layer2 {
 				mos.close();
 		}
 		protected void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
-			System.out.println("MAPPING: " + value);
+			//System.out.println("MAPPING: " + value);
 			String[] keyValue = value.toString().split("\t");			
 			long count = 0;			
 			WordWordDecade wwdKey = null;
@@ -88,25 +88,25 @@ public class Layer2 {
 				throws IOException, InterruptedException {
 		
 			Iterator<DSLayer2> it = values.iterator();
-			System.out.println("Reducing: " + key.toString());				
+			//System.out.println("Reducing: " + key.toString());				
 			
 			// The total number of word 1 will be the first value in the iterable
 			// That's because we defined the secondary sort to be WordWordDecade's sort			
 			long totalNumberOfWord1 = it.next().getNumber();		
 			
-			System.out.println("totalNumberOfWord1: " + String.valueOf(totalNumberOfWord1));
+			//System.out.println("totalNumberOfWord1: " + String.valueOf(totalNumberOfWord1));
 			
 			// If the key had only one value - then that key had only a decade in it (by design)
 			if (!it.hasNext()) {
 				WordWordDecade new_wwdKey = new WordWordDecade(key.getDecade());
 				DataStructureBase new_value = DataStructureBase.create(totalNumberOfWord1, 0);
-				System.out.println("Writing - Key: " + new_wwdKey.toString() + ", Value: " + new_value.toString());
+				//System.out.println("Writing - Key: " + new_wwdKey.toString() + ", Value: " + new_value.toString());
 				context.write(new_wwdKey, new_value);
 			} else {
 				for (DSLayer2 value : values) {					
 					WordWordDecade new_wwdKey = new WordWordDecade(key.getWord1(), value.getWord(), key.getDecade());
 					DataStructureBase new_value = DataStructureBase.create(value.getNumber(), totalNumberOfWord1);
-					System.out.println("----Writing - Key: " + new_wwdKey.toString() + ", Value: " + new_value.toString());
+					//System.out.println("----Writing - Key: " + new_wwdKey.toString() + ", Value: " + new_value.toString());
 					context.write(new_wwdKey, new_value);
 				}		
 			}
