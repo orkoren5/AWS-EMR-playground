@@ -1,11 +1,12 @@
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Iterator;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
+import org.apache.hadoop.io.WritableComparable;
+import org.apache.hadoop.io.WritableComparator;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.hadoop.mapreduce.Reducer;
@@ -26,7 +27,7 @@ public class Layer2 {
 		private MultipleOutputs<WordWordDecade, DataStructureBase> mos;
 		 
 		public void setup(Context context) {
-			System.out.println("--------------MAPPER SETUP-----------&&&&&");
+			System.out.println("--------------MAPPER SETUP----------------");
 			 mos = new MultipleOutputs<WordWordDecade, DataStructureBase>(context);
 		}
 		
@@ -39,11 +40,9 @@ public class Layer2 {
 			String[] keyValue = value.toString().split("\t");			
 			long count = 0;			
 			WordWordDecade wwdKey = null;
-			WordWordDecade wwdKeyCopy = null;
 			
 			try {
 				wwdKey = WordWordDecade.parse(keyValue[0]);
-				wwdKeyCopy = WordWordDecade.copy(wwdKey);
 				count = Long.parseLong(keyValue[1]);
 			}
 			catch( Exception ex) {
@@ -52,73 +51,64 @@ public class Layer2 {
 				return;
 			}
 			
-			DataStructureBase ds1 = DataStructureBase.create(wwdKey.getWord2(), count);
-			wwdKey.clearWord2();
-			System.out.println("Mapper Output: Key:" + wwdKey.toString() + ", Value " + ds1.toString());			
-			context.write(wwdKey, ds1);
-			//mos.write("layer2", wwdKey, ds1);
-			
-			if (wwdKeyCopy.isCouple()) {
-				DataStructureBase ds2 = DataStructureBase.create(wwdKeyCopy.getWord1(), count);
-				wwdKeyCopy.clearWord1();
-				System.out.println("Mapper Output: Key:" + wwdKeyCopy.toString() + ", Value " + ds2.toString());
-				context.write(wwdKeyCopy, ds2);
-				//mos.write("layer2", wwdKey2, ds2);
+			context.write(wwdKey, DataStructureBase.create(wwdKey.getWord2(), count));
+			if (wwdKey.isCouple()) {
+				DataStructureBase ds2 = DataStructureBase.create(wwdKey.getWord1(), count);
+				wwdKey.swap();
+				context.write(wwdKey, ds2);
 			}
 		}
 
 	}
 	
+	public static class Layer2_GroupingComparator extends WritableComparator {
+	    protected Layer2_GroupingComparator() {
+	        super(WordWordDecade.class, true);
+	    }   
+	    
+	    @SuppressWarnings("rawtypes")
+	    @Override
+	    public int compare(WritableComparable w1, WritableComparable w2) {
+	    	WordWordDecade k1 = (WordWordDecade)w1;
+	    	WordWordDecade k2 = (WordWordDecade)w2;
+	         	    	
+			int res1 = Integer.compare(k1.getDecade(), k2.getDecade());
+			int res2 = k1.getWord1().compareTo(k2.getWord1());				
+			if(res1 != 0) {
+				return res1;
+			} else {
+				return res2;
+			}	
+	    }
+	}
+	
 	public static class Layer2_Reducer extends Reducer<WordWordDecade, DSLayer2, WordWordDecade, DataStructureBase> {
-		
-		//private MultipleOutputs<WordWordDecade, DataStructureBase> mos;
-		 
-		//public void setup(Context context) {
-		//	System.out.println("--------------REDUCER SETUP-----------");
-		//	 mos = new MultipleOutputs<WordWordDecade, DataStructureBase>(context);
-		//}
-		
-		/**
-		 * The values which the Reducer gets is designed to consist of only one value with an empty word.
-		 * That number value is the sum of all appearances of word1 in a decade.
-		 * @param values the list of values the reducer gets
-		 * @return That value of the sum of all appearances of word1 in a decade.
-		 */
-		long getTheOnlyNumberValue(Iterable<DSLayer2> values, List<DSLayer2> cacheList) {
-			long retVal = 0;
-			for (DSLayer2 value : values) {	
-				System.out.println("---- " + value.toString() + ", is Empty: " + String.valueOf(value.isWordEmpty()));
-				if (value.isWordEmpty()) {					
-					retVal = value.getNumber();
-				} else {
-					cacheList.add((DSLayer2)value.copy());
-				}
-			}
-			return retVal;
-		}
 		
 		public void reduce(WordWordDecade key, Iterable<DSLayer2> values, Context context)
 				throws IOException, InterruptedException {
 		
-			System.out.println("Reducing: " + key.toString());			
-			List<DSLayer2> cacheList = new ArrayList<DSLayer2>();
-			long totalNumberOfWord1 = getTheOnlyNumberValue(values, cacheList);			
-			System.out.println("totalNumberOfWord1: " + String.valueOf(totalNumberOfWord1));			
-			for (DSLayer2 value : cacheList) {				
-				WordWordDecade new_wwdKey = new WordWordDecade(key.getWord1(), value.getWord(), key.getDecade());
-				DataStructureBase new_value = DataStructureBase.create(totalNumberOfWord1, value.getNumber());
-				System.out.println("Writing - Key: " + new_wwdKey.toString() + ", Value: " + new_value.toString());
-				//mos.write("layer3", new_wwdKey, new_value);
-				context.write(new_wwdKey, new_value);
-			}	
+			Iterator<DSLayer2> it = values.iterator();
+			System.out.println("Reducing: " + key.toString());				
+			
+			// The total number of word 1 will be the first value in the iterable
+			// That's because we defined the secondary sort to be WordWordDecade's sort			
+			long totalNumberOfWord1 = it.next().getNumber();		
+			
+			System.out.println("totalNumberOfWord1: " + String.valueOf(totalNumberOfWord1));
 			
 			// If the key had only one value - then that key had only a decade in it (by design)
-			if (cacheList.isEmpty()) {
+			if (!it.hasNext()) {
 				WordWordDecade new_wwdKey = new WordWordDecade(key.getDecade());
 				DataStructureBase new_value = DataStructureBase.create(totalNumberOfWord1, 0);
 				System.out.println("Writing - Key: " + new_wwdKey.toString() + ", Value: " + new_value.toString());
-				//mos.write("layer3", new_wwdKey, new_value);
 				context.write(new_wwdKey, new_value);
+			} else {
+				for (DSLayer2 value : values) {					
+					WordWordDecade new_wwdKey = new WordWordDecade(key.getWord1(), value.getWord(), key.getDecade());
+					DataStructureBase new_value = DataStructureBase.create(value.getNumber(), totalNumberOfWord1);
+					System.out.println("----Writing - Key: " + new_wwdKey.toString() + ", Value: " + new_value.toString());
+					context.write(new_wwdKey, new_value);
+				}		
 			}
 		}
 	}
@@ -130,11 +120,8 @@ public class Layer2 {
 		    job.setJarByClass(Layer2.class);
 		    job.setMapperClass(Layer2.Layer2_Mapper.class);
 		    //job.setCombinerClass(Layer2.Layer2_Reducer.class);
+		    job.setGroupingComparatorClass(Layer2.Layer2_GroupingComparator.class);
 		    job.setReducerClass(Layer2.Layer2_Reducer.class);
-//		    MultipleOutputs.addNamedOutput(job, "layer2", TextOutputFormat.class,
-//		    		 WordWordDecade.class, DSLayer2.class);
-//		    MultipleOutputs.addNamedOutput(job, "layer3", TextOutputFormat.class,
-//		    		 WordWordDecade.class, DSLayer3.class);
 		    job.setMapOutputKeyClass(WordWordDecade.class);
 		    job.setMapOutputValueClass(DSLayer2.class);
 		    job.setOutputKeyClass(WordWordDecade.class);

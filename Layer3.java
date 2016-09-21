@@ -9,11 +9,8 @@ import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.hadoop.mapreduce.Reducer;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
-import org.apache.hadoop.mapreduce.lib.output.MultipleOutputs;
-import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 
 import DataStructures.DSLayer3;
-import DataStructures.DSLayer4;
 import DataStructures.DataStructureBase;
 import DataStructures.WordWordDecade;
 
@@ -47,13 +44,6 @@ public class Layer3 {
 	}
 	
 	public static class Layer3_Reducer extends Reducer<WordWordDecade, DSLayer3, WordWordDecade, DataStructureBase> {
-			
-		/*private MultipleOutputs<WordWordDecade, DataStructureBase> mos;
-		 
-		public void setup(Context context) {
-			System.out.println("--------------REDUCER SETUP-----------");
-			 mos = new MultipleOutputs<WordWordDecade, DataStructureBase>(context);
-		}*/
 		
 		public void reduce(WordWordDecade key, Iterable<DSLayer3> values, Context context)
 				throws IOException, InterruptedException {
@@ -73,7 +63,6 @@ public class Layer3 {
 				}
 			}
 			
-			//mos.write("layer4", key, DataStructureBase.create(pairNum, word1Num, word2Num));
 			context.write(key, DataStructureBase.create(pairNum, word1Num, word2Num));
 		}
 	}
@@ -86,10 +75,6 @@ public class Layer3 {
 		    job.setMapperClass(Layer3_Mapper.class);
 		    job.setCombinerClass(Layer3_Reducer.class);
 		    job.setReducerClass(Layer3_Reducer.class);
-		    MultipleOutputs.addNamedOutput(job, "layer3", TextOutputFormat.class,
-		    		 WordWordDecade.class, DSLayer3.class);
-		    MultipleOutputs.addNamedOutput(job, "layer4", TextOutputFormat.class,
-		    		 WordWordDecade.class, DSLayer4.class);
 		    job.setOutputKeyClass(WordWordDecade.class);
 		    job.setOutputValueClass(DSLayer3.class);
 		    //job.setInputFormatClass(SequenceFileInputFormat.class);

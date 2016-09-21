@@ -4,7 +4,7 @@ import org.apache.hadoop.io.Writable;
 
 public abstract class DataStructureBase implements Writable {
 
-	protected final static String EMPTY_STR = "~"; // Should be char with high ASCII value
+	protected final static String EMPTY_STR = "*"; // Should be char with low ASCII value
 	
 	///////////////////////////////////////////////////
 	// Factory methods()

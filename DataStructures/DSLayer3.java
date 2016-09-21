@@ -40,7 +40,7 @@ public class DSLayer3 extends DataStructureBase  {
 	}
 	
 	public String toString() {
-		return wordSum + " " + String.valueOf(pairSum);
+		return String.valueOf(pairSum) + " " + wordSum;
 	}
 
 	@Override

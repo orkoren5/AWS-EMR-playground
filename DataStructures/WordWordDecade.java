@@ -10,18 +10,22 @@ public class WordWordDecade implements WritableComparable<WordWordDecade> {
 	private String word1;
 	private String word2;
 	private Integer decade;
-	private final static String EMPTY_STR = "~"; // Should be char with high ASCII value
+	private final static String EMPTY_STR = "*"; // Should be char with low ASCII value
 	
 	/**
 	 * Creates a new Word-Word-Decade key. 
-	 * The former word (Dictionary order) is inserted to word1 field, and the latter to word2 field	 	
+	 * The former word (Dictionary order) is inserted to word1 field, and the latter to word2 field
+	 * An empty word will be the latter.	 	
 	 * The year is parsed as decade (1979 -> 1970)
 	 * @param wordA a word
 	 * @param wordB a word
 	 * @param year a year
 	 */
 	public WordWordDecade(String wordA, String wordB, Integer year) {
-		int cmp = wordA.compareTo(wordB);
+		int cmp = wordA.equals(EMPTY_STR) || wordB.equals(EMPTY_STR)
+				? -1*wordA.compareTo(wordB)
+				: wordA.compareTo(wordB);
+
 		this.word1 = cmp < 0 ? wordA : wordB;
 		this.word2 = cmp < 0 ? wordB : wordA;
 		this.decade = (year / 10) * 10; // 1971 -> 1970; 1999 -> 1990
@@ -102,6 +106,15 @@ public class WordWordDecade implements WritableComparable<WordWordDecade> {
 	}
 	
 	/**
+	 * Switches between word1 and word 2. Note: The dictionary order after swap will not necessary be correct!
+	 */
+	public void swap() {
+		String tmp = this.word1;
+		this.word1 = this.word2;
+		this.word2 = tmp;
+	}
+	
+	/**
 	 * gets the decade
 	 */
 	public int getDecade(){
@@ -145,7 +158,8 @@ public class WordWordDecade implements WritableComparable<WordWordDecade> {
 	public int compareTo(WordWordDecade o) {
 		int res1 = this.decade.compareTo(o.decade);
 		int res2 = this.word1.compareTo(o.word1);
-		int res3 = this.word2.compareTo(o.word2);		
+		int res3 = this.word2.compareTo(o.word2);
+		
 		if(res1 != 0) {
 			return res1;
 		} else if (res2 != 0) {

@@ -7,6 +7,7 @@ import org.apache.hadoop.io.DoubleWritable;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
+import org.apache.hadoop.mapreduce.lib.input.SequenceFileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 
 import DataStructures.DSLayer2;
@@ -20,7 +21,7 @@ public class Driver
 	public static void main(String[] args) throws Exception 
 	{
 		System.out.println("Run Driver");
-		
+				
 		String outputFolder = args[1];
 		
 		Job jobLayer1 = initLayer1Job(args[0], outputFolder);
@@ -32,7 +33,7 @@ public class Driver
 		Job jobLayer3 = initLayer3Job(outputFolder + "b", outputFolder + "c");
 		jobLayer3.waitForCompletion(true);
 		
-		Job jobLayer4 = initLayer4Job(outputFolder + "c", outputFolder + "d");
+		Job jobLayer4 = initLayer4Job(outputFolder + "c", outputFolder + "d", args[2]);
 		jobLayer4.waitForCompletion(true);
 
 
@@ -52,7 +53,7 @@ public class Driver
 	    job.setReducerClass(Layer1.LayerOneReducer.class);
 	    job.setOutputKeyClass(WordWordDecade.class);
 	    job.setOutputValueClass(LongWritable.class);
-	    //job.setInputFormatClass(SequenceFileInputFormat.class);
+	    job.setInputFormatClass(SequenceFileInputFormat.class);
 	    FileInputFormat.addInputPath(job, new Path(input));
 	    FileOutputFormat.setOutputPath(job, new Path(output));
 	    
@@ -70,11 +71,8 @@ public class Driver
 	    job.setJarByClass(Layer2.class);
 	    job.setMapperClass(Layer2.Layer2_Mapper.class);
 	    //job.setCombinerClass(Layer2.Layer2_Reducer.class);
+	    job.setGroupingComparatorClass(Layer2.Layer2_GroupingComparator.class);
 	    job.setReducerClass(Layer2.Layer2_Reducer.class);
-//	    MultipleOutputs.addNamedOutput(job, "layer2", TextOutputFormat.class,
-//	    		 WordWordDecade.class, DSLayer2.class);
-//	    MultipleOutputs.addNamedOutput(job, "layer3", TextOutputFormat.class,
-//	    		 WordWordDecade.class, DSLayer3.class);
 	    job.setMapOutputKeyClass(WordWordDecade.class);
 	    job.setMapOutputValueClass(DSLayer2.class);
 	    job.setOutputKeyClass(WordWordDecade.class);
@@ -99,10 +97,6 @@ public class Driver
 	    job.setMapperClass(Layer3.Layer3_Mapper.class);
 	    //job.setCombinerClass(Layer3.Layer3_Reducer.class);
 	    job.setReducerClass(Layer3.Layer3_Reducer.class);
-//	    MultipleOutputs.addNamedOutput(job, "layer3", TextOutputFormat.class,
-//	    		 WordWordDecade.class, DSLayer3.class);
-//	    MultipleOutputs.addNamedOutput(job, "layer4", TextOutputFormat.class,
-//	    		 WordWordDecade.class, DSLayer4.class);
 	    job.setMapOutputKeyClass(WordWordDecade.class);
 	    job.setMapOutputValueClass(DSLayer3.class);
 	    job.setOutputKeyClass(WordWordDecade.class);
@@ -117,20 +111,18 @@ public class Driver
 	    	
 	}
 	
-	public static Job initLayer4Job(String input, String output) throws IOException 
+	public static Job initLayer4Job(String input, String output, String k) throws IOException 
 	{
 		System.out.println("init Layer4 job");
 		
 	    Configuration conf = new Configuration();
+	    conf.set("k", k);
 	    Job job = Job.getInstance(conf, "ass2");
 	    job.setJarByClass(Layer4.class);
 	    job.setMapperClass(Layer4.Layer4_Mapper.class);
 	    //job.setCombinerClass(Layer3.Layer3_Reducer.class);
+	    job.setGroupingComparatorClass(Layer4.Layer4_GroupingComparator.class);
 	    job.setReducerClass(Layer4.Layer4_Reducer.class);
-//	    MultipleOutputs.addNamedOutput(job, "layer3", TextOutputFormat.class,
-//	    		 WordWordDecade.class, DSLayer3.class);
-//	    MultipleOutputs.addNamedOutput(job, "layer4", TextOutputFormat.class,
-//	    		 WordWordDecade.class, DSLayer4.class);
 	    job.setMapOutputKeyClass(WordWordDecade.class);
 	    job.setMapOutputValueClass(DSLayer5.class);
 	    job.setOutputKeyClass(WordWordDecade.class);
