@@ -15,7 +15,6 @@ import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.hadoop.mapreduce.Partitioner;
 import org.apache.hadoop.mapreduce.Reducer;
-
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.input.SequenceFileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
@@ -58,14 +57,14 @@ public class Layer1 {
     	// if broken line
     	if (splitted.length < 3)
     	{ 
-    		System.out.println("splitted.length:" + splitted.length + " < 3: -> return");
+    		//System.out.println("splitted.length:" + splitted.length + " < 3: -> return");
     		return;
     	}
     	
     	int year = Integer.parseInt(splitted[1]);
     	if (year < 1900)
     	{
-    		System.out.println("decade < 1900: -> return");
+    		//System.out.println("decade < 1900: -> return");
     		return;
     	}
     	
@@ -87,14 +86,15 @@ public class Layer1 {
     	int size = validWords.size();
     	if(size > 1)
     	{
-    		LongWritable amount = new LongWritable(ngram_amount*size);
+    		LongWritable amount = new LongWritable(ngram_amount);
+    		LongWritable decade_amount = new LongWritable(ngram_amount*size);
 			int midWordIndex = (int) Math.ceil(size / 2.0);
 			String middleWord = validWords.remove(midWordIndex);
 	
 			//<{*,*,decade},amount>
 			WordWordDecade emptyPair = new WordWordDecade(year);
 			//System.out.println("Mapper Output emptyPair- Key:" + emptyPair.toString() + ", Value:" + amount.toString());
-			context.write(emptyPair , amount);
+			context.write(emptyPair , decade_amount);
 			
 			WordWordDecade wordMiddle = new WordWordDecade(middleWord, year);
 			//System.out.println("Mapper Output wordMiddle: Key:" + wordMiddle.toString() + ", Value " + amount.toString());
@@ -147,12 +147,10 @@ public class Layer1 {
     {
        //System.out.println("$$ Reducing: " + key.toString());	
 	   long sum = 0;
-	   //sum all val
 	   for (LongWritable val : values) 
 	   {
 	     sum += val.get();
 	   }
-	   //store
 	   LongWritable sumToPrint = new LongWritable(sum);
 	   //System.out.println("Writing - Key: " + key.toString() + ", Value: " + sumToPrint.toString());
 	   context.write(key, sumToPrint); 

@@ -24,7 +24,7 @@ public class Layer4
 	public static class Layer4_Mapper extends Mapper<LongWritable, Text, WordWordDecade, DataStructureBase> {
 	
 		protected void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
-			System.out.println("MAPPING: " + value);
+			//System.out.println("MAPPING: " + value);
 			
 			String[] keyValue = value.toString().split("\t");
 			String str_wwdKey = keyValue[0];
@@ -44,7 +44,7 @@ public class Layer4
 			}
 			DSLayer4 ds4 = (DSLayer4) ds;
 			DataStructureBase ds5 = DataStructureBase.create(wwdKey.getWord1(),wwdKey.getWord2(), ds4.getPairSum() , ds4.getWord1Sum(), ds4.getWord2Sum());
-			System.out.println("Mapper Output: Key:" + wwdKey.toString() + ", Value:" + ds5.toString());
+			//System.out.println("Mapper Output: Key:" + wwdKey.toString() + ", Value:" + ds5.toString());
 			context.write(wwdKey, ds5);		
 		}
 	}
@@ -101,7 +101,7 @@ public class Layer4
 		public void reduce(WordWordDecade key, Iterable<DSLayer5> values, Context context)
 				throws IOException, InterruptedException {
 		
-			System.out.println("Reducing: " + key.toString());
+			//System.out.println("Reducing: " + key.toString());
 			
 			// The total number of words in this decade will be the first value in the iterable
 			// That's because we defined the secondary sort to be WordWordDecade's sort, and we defined a grouping comparator		
@@ -109,19 +109,22 @@ public class Layer4
 			
 			WordWordDecade[] maxKPmi_keys = new WordWordDecade[k];
 			double[] maxKPmi = new double[k];
-					
+			int numKeys = 0;
+			
 			// Calculate for each couple its PMI, and if it's among the k highest PMI scores - put it in the array
 			for (DSLayer5 value : values) {				
 				WordWordDecade new_wwdKey = new WordWordDecade(value.getWord1(), value.getWord2(), key.getDecade());				
 				double pmi = Math.log(value.getNum1()) + Math.log(sumWordsInDecade) - Math.log(value.getNum2()) - Math.log(value.getNum3());
-				putValueInOrderedArray(pmi, new_wwdKey, maxKPmi, maxKPmi_keys);			
+				putValueInOrderedArray(pmi, new_wwdKey, maxKPmi, maxKPmi_keys);
+				numKeys++;
+				System.out.println(new_wwdKey.toString() + " " + value.getNum1() + " " + value.getNum2() + " " + value.getNum3() + " " + sumWordsInDecade + " " + pmi);
 			}	
 			
 			// Writes to context the max k couples which scored the highest PMIs
-			for (int i=0; i < k; i++) {
+			int min = Math.min(k, numKeys);
+			for (int i = k-1; i >= k - min; --i) {
 				DoubleWritable pmiCalcW = new DoubleWritable(maxKPmi[i]);
-				WordWordDecade wwdKey =  maxKPmi_keys[i];
-				System.out.println("Writing - Key: " + wwdKey.toString() + ", Value: " + pmiCalcW.toString());
+				WordWordDecade wwdKey =  maxKPmi_keys[i];				
 				context.write(wwdKey, pmiCalcW);
 			}	
 		}

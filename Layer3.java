@@ -37,7 +37,7 @@ public class Layer3 {
 				return;
 			}
 
-			System.out.println("Mapped: " + value);			
+			//System.out.println("Mapped: " + value);			
 			context.write(wwdKey, ds);
 		}
 
@@ -48,7 +48,7 @@ public class Layer3 {
 		public void reduce(WordWordDecade key, Iterable<DSLayer3> values, Context context)
 				throws IOException, InterruptedException {
 		
-			System.out.println("Reducing: " + key.toString());
+			//System.out.println("Reducing: " + key.toString());
 			long pairNum = 0, 
 				word1Num = 0, 
 				word2Num = 0; 
