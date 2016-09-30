@@ -4,9 +4,7 @@ import java.io.IOException;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.DoubleWritable;
-import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.LongWritable;
-import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.input.SequenceFileInputFormat;
@@ -35,16 +33,12 @@ public class Driver
 		Job jobLayer3 = initLayer3Job(outputFolder + "b", outputFolder + "c");
 		jobLayer3.waitForCompletion(true);
 		
-		Job jobLayer4 = initLayer4Job(outputFolder + "c", outputFolder + "d", args[2]);
+		Job jobLayer4 = initLayer4AJob(outputFolder + "c", outputFolder + "d", args[2]);
 		jobLayer4.waitForCompletion(true);
 		
-		Job jobLayer5 = initLayer5Job(outputFolder + "d", outputFolder + "e", args[3]);
+		Job jobLayer5 = initLayer4BJob(outputFolder + "c", outputFolder + "e", args[3]);
 		jobLayer5.waitForCompletion(true);
 		
-		//getFValue(jobLayer5);
-		
-		
-
 		System.exit(0);
 
 	}
@@ -119,18 +113,43 @@ public class Driver
 	    	
 	}
 	
-	public static Job initLayer4Job(String input, String output, String k) throws IOException 
+	public static Job initLayer4AJob(String input, String output, String k) throws IOException 
 	{
-		System.out.println("init Layer4 job");
+		System.out.println("init Layer4A job");
 		
 	    Configuration conf = new Configuration();
 	    conf.set("k", k);
 	    Job job = Job.getInstance(conf, "ass2");
-	    job.setJarByClass(Layer4.class);
-	    job.setMapperClass(Layer4.Layer4_Mapper.class);
+	    job.setJarByClass(Layer4A.class);
+	    job.setMapperClass(Layer4A.Layer4A_Mapper.class);
 	    //job.setCombinerClass(Layer3.Layer3_Reducer.class);
-	    job.setGroupingComparatorClass(Layer4.Layer4_GroupingComparator.class);
-	    job.setReducerClass(Layer4.Layer4_Reducer.class);
+	    job.setGroupingComparatorClass(Layer4A.Layer4A_GroupingComparator.class);
+	    job.setReducerClass(Layer4A.Layer4A_Reducer.class);
+	    job.setMapOutputKeyClass(WordWordDecade.class);
+	    job.setMapOutputValueClass(DSLayer5.class);
+	    job.setOutputKeyClass(WordWordDecade.class);
+	    job.setOutputValueClass(DoubleWritable.class);
+	    //job.setInputFormatClass(SequenceFileInputFormat.class);
+	    FileInputFormat.addInputPath(job, new Path(input));
+	    FileOutputFormat.setOutputPath(job, new Path(output));
+	    
+	    System.out.println("job Layer4 created");
+	    
+	    return job;	    	
+	}
+
+	public static Job initLayer4BJob(String input, String output, String th) throws IOException 
+	{
+		System.out.println("init Layer4B job");
+		
+	    Configuration conf = new Configuration();
+	    conf.set("threshold", th);
+	    Job job = Job.getInstance(conf, "ass2");
+	    job.setJarByClass(Layer4B.class);
+	    job.setMapperClass(Layer4B.Layer4B_Mapper.class);
+	    //job.setCombinerClass(Layer3.Layer3_Reducer.class);
+	    job.setGroupingComparatorClass(Layer4B.Layer4B_GroupingComparator.class);
+	    job.setReducerClass(Layer4B.Layer4B_Reducer.class);
 	    job.setMapOutputKeyClass(WordWordDecade.class);
 	    job.setMapOutputValueClass(DSLayer5.class);
 	    job.setOutputKeyClass(WordWordDecade.class);
@@ -144,50 +163,4 @@ public class Driver
 	    return job;
 	    	
 	}
-	
-	public static Job initLayer5Job(String input, String output, String tH) throws IOException 
-	{	
-		System.out.println("init Layer5 job");
-		
-	    Configuration conf = new Configuration();
-	    conf.set("tH", tH);
-	    Job job = Job.getInstance(conf, "ass2");
-	    job.setJarByClass(Layer5.class);
-	    job.setMapperClass(Layer5.Layer5_Mapper.class);
-	    //job.setGroupingComparatorClass(Layer5.Layer5_GroupingComparator.class);
-	    job.setReducerClass(Layer5.Layer5Reducer.class);
-	    job.setMapOutputKeyClass(Text.class);
-	    job.setMapOutputValueClass(IntWritable.class);
-	    job.setOutputKeyClass(Text.class);
-	    job.setOutputValueClass(LongWritable.class);
-	    FileInputFormat.addInputPath(job, new Path(input));
-	    FileOutputFormat.setOutputPath(job, new Path(output));
-	    
-	    System.out.println("job Layer5 created");
-	    
-	    return job;
-	    	
-	}
-	
-
-
-/*
-	private static double getFValue(Job job) 
-	{
-		job.get
-		//long truePositive, long falsePositive, long falseNegative
-		if (truePositive + falsePositive == 0 || truePositive + falseNegative == 0) {
-			return 0;
-		}
-		double precision = truePositive / (truePositive + falsePositive);
-		double recall = truePositive / (truePositive + falseNegative);
-
-		if (precision + recall == 0) {
-			return 0;
-		} else {
-			return 2 * ((precision * recall) / (precision + recall));
-		}
-	}
-*/
-
 }

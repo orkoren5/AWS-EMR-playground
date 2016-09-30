@@ -118,10 +118,10 @@ public class DriverPartA
 	    conf.set("k", k);
 	    Job job = Job.getInstance(conf, "ass2");
 	    job.setJarByClass(Layer4A.class);
-	    job.setMapperClass(Layer4A.Layer4_Mapper.class);
+	    job.setMapperClass(Layer4A.Layer4A_Mapper.class);
 	    //job.setCombinerClass(Layer3.Layer3_Reducer.class);
-	    job.setGroupingComparatorClass(Layer4A.Layer4_GroupingComparator.class);
-	    job.setReducerClass(Layer4A.Layer4_Reducer.class);
+	    job.setGroupingComparatorClass(Layer4A.Layer4A_GroupingComparator.class);
+	    job.setReducerClass(Layer4A.Layer4A_Reducer.class);
 	    job.setMapOutputKeyClass(WordWordDecade.class);
 	    job.setMapOutputValueClass(DSLayer5.class);
 	    job.setOutputKeyClass(WordWordDecade.class);

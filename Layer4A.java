@@ -21,7 +21,7 @@ import DataStructures.WordWordDecade;
 
 public class Layer4A 
 {
-	public static class Layer4_Mapper extends Mapper<LongWritable, Text, WordWordDecade, DataStructureBase> {
+	public static class Layer4A_Mapper extends Mapper<LongWritable, Text, WordWordDecade, DataStructureBase> {
 	
 		protected void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
 			//System.out.println("MAPPING: " + value);
@@ -49,8 +49,8 @@ public class Layer4A
 		}
 	}
 	
-	public static class Layer4_GroupingComparator extends WritableComparator {
-	    protected Layer4_GroupingComparator() {
+	public static class Layer4A_GroupingComparator extends WritableComparator {
+	    protected Layer4A_GroupingComparator() {
 	        super(WordWordDecade.class, true);
 	    }   
 	    
@@ -64,7 +64,7 @@ public class Layer4A
 	    }
 	}
 	
-	public static class Layer4_Reducer extends Reducer<WordWordDecade, DSLayer5, WordWordDecade, DoubleWritable> {
+	public static class Layer4A_Reducer extends Reducer<WordWordDecade, DSLayer5, WordWordDecade, DoubleWritable> {
 		
 		private int k;
 		
@@ -117,7 +117,7 @@ public class Layer4A
 				double pmi = Math.log(value.getNum1()) + Math.log(sumWordsInDecade) - Math.log(value.getNum2()) - Math.log(value.getNum3());
 				putValueInOrderedArray(pmi, new_wwdKey, maxKPmi, maxKPmi_keys);
 				numKeys++;
-				System.out.println(new_wwdKey.toString() + " " + value.getNum1() + " " + value.getNum2() + " " + value.getNum3() + " " + sumWordsInDecade + " " + pmi);
+				//System.out.println(new_wwdKey.toString() + " " + value.getNum1() + " " + value.getNum2() + " " + value.getNum3() + " " + sumWordsInDecade + " " + pmi);
 			}	
 			
 			// Writes to context the max k couples which scored the highest PMIs
@@ -136,10 +136,10 @@ public class Layer4A
 		    conf.set("k", args[0]);
 		    Job job = Job.getInstance(conf, "ass2");
 		    job.setJarByClass(Layer4A.class);
-		    job.setMapperClass(Layer4_Mapper.class);
-		    job.setGroupingComparatorClass(Layer4A.Layer4_GroupingComparator.class);
+		    job.setMapperClass(Layer4A_Mapper.class);
+		    job.setGroupingComparatorClass(Layer4A.Layer4A_GroupingComparator.class);
 		   // job.setCombinerClass(Layer4_Reducer.class);
-		    job.setReducerClass(Layer4_Reducer.class);
+		    job.setReducerClass(Layer4A_Reducer.class);
 		    job.setMapOutputKeyClass(WordWordDecade.class);
 		    job.setMapOutputValueClass(DSLayer5.class);
 		    job.setOutputKeyClass(WordWordDecade.class);
