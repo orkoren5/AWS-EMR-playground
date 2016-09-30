@@ -58,8 +58,8 @@ public class Layer4B
 		}
 	}
 	
-	public static class Layer4_GroupingComparator extends WritableComparator {
-	    protected Layer4_GroupingComparator() {
+	public static class Layer4B_GroupingComparator extends WritableComparator {
+	    protected Layer4B_GroupingComparator() {
 	        super(WordWordDecade.class, true);
 	    }   
 	    
@@ -151,21 +151,21 @@ public class Layer4B
 
 	  public static void main(String[] args) throws Exception {
 		  	System.out.println("RUNNING");	
-		    Configuration conf = new Configuration();
-		    conf.set("k", args[0]);
+		  	Configuration conf = new Configuration();
+		    conf.set("threshold", args[2]);
 		    Job job = Job.getInstance(conf, "ass2");
 		    job.setJarByClass(Layer4B.class);
-		    job.setMapperClass(Layer4B_Mapper.class);
-		    job.setGroupingComparatorClass(Layer4B.Layer4_GroupingComparator.class);
-		   // job.setCombinerClass(Layer4_Reducer.class);
-		    job.setReducerClass(Layer4B_Reducer.class);
+		    job.setMapperClass(Layer4B.Layer4B_Mapper.class);
+		    //job.setCombinerClass(Layer3.Layer3_Reducer.class);
+		    job.setGroupingComparatorClass(Layer4B.Layer4B_GroupingComparator.class);
+		    job.setReducerClass(Layer4B.Layer4B_Reducer.class);
 		    job.setMapOutputKeyClass(WordWordDecade.class);
 		    job.setMapOutputValueClass(DSLayer5.class);
 		    job.setOutputKeyClass(WordWordDecade.class);
 		    job.setOutputValueClass(DoubleWritable.class);
 		    //job.setInputFormatClass(SequenceFileInputFormat.class);
-		    FileInputFormat.addInputPath(job, new Path(args[1]));
-		    FileOutputFormat.setOutputPath(job, new Path(args[2]));
+		    FileInputFormat.addInputPath(job, new Path(args[0]));
+		    FileOutputFormat.setOutputPath(job, new Path(args[1]));
 		    System.exit(job.waitForCompletion(true) ? 0 : 1);
 		  }
 }
