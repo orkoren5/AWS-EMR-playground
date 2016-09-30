@@ -145,12 +145,12 @@ public class Driver
 	    	
 	}
 	
-	public static Job initLayer5Job(String input, String output, String tH) throws IOException 
+	public static Job initLayer5Job(String input, String output, String th) throws IOException 
 	{	
 		System.out.println("init Layer5 job");
 		
 	    Configuration conf = new Configuration();
-	    conf.set("tH", tH);
+	    conf.set("threshold", th);
 	    Job job = Job.getInstance(conf, "ass2");
 	    job.setJarByClass(Layer5.class);
 	    job.setMapperClass(Layer5.Layer5_Mapper.class);
