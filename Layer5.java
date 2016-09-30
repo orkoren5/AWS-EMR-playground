@@ -14,8 +14,6 @@ import org.apache.hadoop.mapreduce.Reducer;
 
 import DataStructures.WordWordDecade;
 
-
-
 	public class Layer5 
 	{
 
