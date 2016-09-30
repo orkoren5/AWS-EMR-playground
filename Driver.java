@@ -4,7 +4,9 @@ import java.io.IOException;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.DoubleWritable;
+import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.LongWritable;
+import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.input.SequenceFileInputFormat;
@@ -35,7 +37,13 @@ public class Driver
 		
 		Job jobLayer4 = initLayer4Job(outputFolder + "c", outputFolder + "d", args[2]);
 		jobLayer4.waitForCompletion(true);
-
+		
+		Job jobLayer5 = initLayer5Job(outputFolder + "d", outputFolder + "e", args[3]);
+		jobLayer5.waitForCompletion(true);
+		
+		//getFValue(jobLayer5);
+		
+		
 
 		System.exit(0);
 
@@ -136,4 +144,50 @@ public class Driver
 	    return job;
 	    	
 	}
+	
+	public static Job initLayer5Job(String input, String output, String tH) throws IOException 
+	{	
+		System.out.println("init Layer5 job");
+		
+	    Configuration conf = new Configuration();
+	    conf.set("tH", tH);
+	    Job job = Job.getInstance(conf, "ass2");
+	    job.setJarByClass(Layer5.class);
+	    job.setMapperClass(Layer5.Layer5_Mapper.class);
+	    //job.setGroupingComparatorClass(Layer5.Layer5_GroupingComparator.class);
+	    job.setReducerClass(Layer5.Layer5Reducer.class);
+	    job.setMapOutputKeyClass(Text.class);
+	    job.setMapOutputValueClass(IntWritable.class);
+	    job.setOutputKeyClass(Text.class);
+	    job.setOutputValueClass(LongWritable.class);
+	    FileInputFormat.addInputPath(job, new Path(input));
+	    FileOutputFormat.setOutputPath(job, new Path(output));
+	    
+	    System.out.println("job Layer5 created");
+	    
+	    return job;
+	    	
+	}
+	
+
+
+/*
+	private static double getFValue(Job job) 
+	{
+		job.get
+		//long truePositive, long falsePositive, long falseNegative
+		if (truePositive + falsePositive == 0 || truePositive + falseNegative == 0) {
+			return 0;
+		}
+		double precision = truePositive / (truePositive + falsePositive);
+		double recall = truePositive / (truePositive + falseNegative);
+
+		if (precision + recall == 0) {
+			return 0;
+		} else {
+			return 2 * ((precision * recall) / (precision + recall));
+		}
+	}
+*/
+
 }
