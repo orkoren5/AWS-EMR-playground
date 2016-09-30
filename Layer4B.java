@@ -7,7 +7,6 @@ import java.util.HashSet;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.DoubleWritable;
-import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.io.WritableComparable;
@@ -15,7 +14,6 @@ import org.apache.hadoop.io.WritableComparator;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.hadoop.mapreduce.Reducer;
-import org.apache.hadoop.mapreduce.Mapper.Context;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 
@@ -87,6 +85,8 @@ public class Layer4B
 			related = getPairsFromTestSetWeb("https://www.cs.bgu.ac.il/~dsp162/wiki.files/wordsim-pos.txt");
 			notRelated = getPairsFromTestSetWeb("https://www.cs.bgu.ac.il/~dsp162/wiki.files/wordsim-neg.txt");
 			threshold = new Double(context.getConfiguration().get("threshold", "1"));
+			System.out.println(related.toString());
+			System.out.println(notRelated.toString());
 		}
 		
 		
@@ -118,7 +118,7 @@ public class Layer4B
 		public void reduce(WordWordDecade key, Iterable<DSLayer5> values, Context context)
 				throws IOException, InterruptedException {
 		
-			//System.out.println("Reducing: " + key.toString());
+			System.out.println("Reducing: " + key.toString());
 			
 			// The total number of words in this decade will be the first value in the iterable
 			// That's because we defined the secondary sort to be WordWordDecade's sort, and we defined a grouping comparator		
@@ -130,12 +130,16 @@ public class Layer4B
 				WordWordDecade new_wwdKey = new WordWordDecade(value.getWord1(), value.getWord2(), key.getDecade());				
 				double pmi = Math.log(value.getNum1()) + Math.log(sumWordsInDecade) - Math.log(value.getNum2()) - Math.log(value.getNum3());
 				if (pmi >= threshold && related.contains(new_wwdKey)) {
+					System.out.println(new_wwdKey.toString() + ": PMI " + pmi + " TP");
 					++tp;
 				} else if (pmi < threshold && notRelated.contains(new_wwdKey)) {
+					System.out.println(new_wwdKey.toString() + ": PMI " + pmi + " TN");
 					++tn;
 				} else if (pmi >= threshold && notRelated.contains(new_wwdKey)) {
+					System.out.println(new_wwdKey.toString() + ": PMI " + pmi + " FN");
 					++fp;
 				} else if (pmi < threshold && related.contains(new_wwdKey)) {
+					System.out.println(new_wwdKey.toString() + ": PMI " + pmi + " FP");
 					++fn;
 				}					
 			}	

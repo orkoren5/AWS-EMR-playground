@@ -115,7 +115,7 @@ public class Driver
 	
 	public static Job initLayer4AJob(String input, String output, String k) throws IOException 
 	{
-		System.out.println("init Layer4 job");
+		System.out.println("init Layer4A job");
 		
 	    Configuration conf = new Configuration();
 	    conf.set("k", k);
@@ -140,7 +140,7 @@ public class Driver
 
 	public static Job initLayer4BJob(String input, String output, String th) throws IOException 
 	{
-		System.out.println("init Layer4 job");
+		System.out.println("init Layer4B job");
 		
 	    Configuration conf = new Configuration();
 	    conf.set("threshold", th);

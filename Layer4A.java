@@ -117,7 +117,7 @@ public class Layer4A
 				double pmi = Math.log(value.getNum1()) + Math.log(sumWordsInDecade) - Math.log(value.getNum2()) - Math.log(value.getNum3());
 				putValueInOrderedArray(pmi, new_wwdKey, maxKPmi, maxKPmi_keys);
 				numKeys++;
-				System.out.println(new_wwdKey.toString() + " " + value.getNum1() + " " + value.getNum2() + " " + value.getNum3() + " " + sumWordsInDecade + " " + pmi);
+				//System.out.println(new_wwdKey.toString() + " " + value.getNum1() + " " + value.getNum2() + " " + value.getNum3() + " " + sumWordsInDecade + " " + pmi);
 			}	
 			
 			// Writes to context the max k couples which scored the highest PMIs
