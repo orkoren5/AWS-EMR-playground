@@ -131,9 +131,11 @@ public class Layer4A
 	}
 
 	  public static void main(String[] args) throws Exception {
-		  	System.out.println("RUNNING");	
+		  	System.out.println("RUNNING L4a");	
+			System.out.println("args[0]:" + args[0].toString() + "; args[1]:" + args[1].toString() + "; args[2]:" + args[2].toString() + "; args[3]:" + args[3].toString());
+
 		    Configuration conf = new Configuration();
-		    conf.set("k", args[0]);
+		    conf.set("k", args[3]);
 		    Job job = Job.getInstance(conf, "ass2");
 		    job.setJarByClass(Layer4A.class);
 		    job.setMapperClass(Layer4A_Mapper.class);

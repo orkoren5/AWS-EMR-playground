@@ -20,7 +20,7 @@ import com.amazonaws.services.elasticmapreduce.model.StepConfig;
 public class DriverAWSPartB 
 {
 	private static final int NUM_OF_INSTANCES = 20;
-	private static final String TYPE_OF_INSTANCE = InstanceType.M3Xlarge.toString();
+	private static final String TYPE_OF_INSTANCE = InstanceType.T2Small.toString();
 	static AmazonElasticMapReduce mapReduce;
 	
 	public static void main(String[] args) throws Exception 
@@ -51,7 +51,7 @@ public class DriverAWSPartB
 				.withName("ass2")
 				.withInstances(instances)
 				.withSteps(stepsConfig)				
-				.withLogUri("s3n://ass2/logs/")		   		 
+				.withLogUri("s3n://s2-or-yoed-ass2/logs/")		   		 
         		.withJobFlowRole("EMR_EC2_DefaultRole")
         		.withServiceRole("EMR_DefaultRole");       	
         
@@ -68,40 +68,40 @@ public class DriverAWSPartB
     {
         
 		//arg1
-		String outputPathL1= "s3n://ass2/output-Layer1" + rnd;
-		String outputPathL2 = "s3n://ass2/output-Layer2" + rnd;
-		String outputPathL3 = "s3n://ass2/output-Layer3" + rnd;
-		String outputPathL4 = "s3n://ass2/output-Layer4" + rnd;
-		String outputPathL5 = "s3n://ass2/output-Layer4" + rnd;
+		String outputPathL1= "s3n://s2-or-yoed-ass2/output-Layer1" + rnd;
+		String outputPathL2 = "s3n://s2-or-yoed-ass2/output-Layer2" + rnd;
+		String outputPathL3 = "s3n://s2-or-yoed-ass2/output-Layer3" + rnd;
+		String outputPathL4 = "s3n://s2-or-yoed-ass2/output-Layer4" + rnd;
+		String outputPathL5 = "s3n://s2-or-yoed-ass2/output-Layer4" + rnd;
 		
 		//corpus
 		//String arg0 = "s3://datasets.elasticmapreduce/ngrams/books/20090715/eng-gb-all/5gram/data"; 
-        String arg0 =  "s3n://dsp112/eng.corp.10k";
+        String arg0 =  "s3://dsp112/eng.corp.10k";
         // TODO Change corpus
        
         
         HadoopJarStepConfig[] hadoopJarsStep = new HadoopJarStepConfig[] 
 		{
 			new HadoopJarStepConfig()
-			.withJar("s3://ass2/Layer1.jar")
+			.withJar("s3n://s2-or-yoed-ass2/Layer1.jar")
             .withMainClass("Layer1.class")
             .withArgs(arg0, outputPathL1),
             new HadoopJarStepConfig()
-			.withJar("s3://ass2/Layer2.jar")
+			.withJar("s3n://s2-or-yoed-ass2/Layer2.jar")
             .withMainClass("Layer2.class") 
-            .withArgs(arg0, outputPathL2),
+            .withArgs(outputPathL1, outputPathL2),
             new HadoopJarStepConfig()
-			.withJar("s3://ass2/Layer3.jar")
+			.withJar("s3n://s2-or-yoed-ass2/Layer3.jar")
             .withMainClass("Layer3.class")
-            .withArgs(arg0, outputPathL3),
+            .withArgs(outputPathL2, outputPathL3),
             new HadoopJarStepConfig()
-			.withJar("s3://ass2/Layer4B.jar")
+			.withJar("s3n://s2-or-yoed-ass2/Layer4B.jar")
             .withMainClass("Layer4B.class") 
-            .withArgs(arg0, outputPathL4),
+            .withArgs(outputPathL3, outputPathL4),
             new HadoopJarStepConfig()
-			.withJar("s3://ass2/Layer5.jar")
+			.withJar("s3n://s2-or-yoed-ass2/Layer5.jar")
             .withMainClass("Layer5.class") 
-            .withArgs(arg0, outputPathL5, threshold)
+            .withArgs(outputPathL4, outputPathL5, threshold)
 		};
         
         

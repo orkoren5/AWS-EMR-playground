@@ -159,6 +159,7 @@ public class Layer1 {
 
   public static void main(String[] args) throws Exception {	 
 	System.out.println("RUNNING L1");	
+	System.out.println("args[0]:" + args[0].toString() + "; args[1]:" + args[1].toString() + "; args[2]:" + args[2].toString());
     Configuration conf = new Configuration();
     Job job = Job.getInstance(conf, "ass2");
     job.setJarByClass(Layer1.class);
@@ -168,8 +169,8 @@ public class Layer1 {
     job.setOutputKeyClass(WordWordDecade.class);
     job.setOutputValueClass(LongWritable.class);
     job.setInputFormatClass(SequenceFileInputFormat.class);
-    FileInputFormat.addInputPath(job, new Path(args[0]));
-    FileOutputFormat.setOutputPath(job, new Path(args[1]));
+    FileInputFormat.addInputPath(job, new Path(args[1]));
+    FileOutputFormat.setOutputPath(job, new Path(args[2]));
     System.exit(job.waitForCompletion(true) ? 0 : 1);
   }
 

@@ -20,8 +20,8 @@ import com.amazonaws.services.elasticmapreduce.model.StepConfig;
 
 public class DriverAWSPartA 
 {
-	private static final int NUM_OF_INSTANCES = 1;
-	private static final String TYPE_OF_INSTANCE = InstanceType.M1Small.toString();
+	private static final int NUM_OF_INSTANCES = 2;
+	private static final String TYPE_OF_INSTANCE = InstanceType.M3Xlarge.toString();
 	static AmazonElasticMapReduce mapReduce;
 	
 	public static void main(String[] args) throws Exception 
@@ -43,9 +43,9 @@ public class DriverAWSPartA
                 .withMasterInstanceType(TYPE_OF_INSTANCE)
                 .withSlaveInstanceType(TYPE_OF_INSTANCE)
                 .withHadoopVersion("2.7.2")
-                .withEc2KeyName("EC2_ass2")
+                .withEc2KeyName("emr-yoed")
                 .withKeepJobFlowAliveWhenNoSteps(false)
-                .withPlacement(new PlacementType("us-east-1b"));
+                .withPlacement(new PlacementType("us-east-1a"));
         
         
         RunJobFlowRequest runFlowRequest = new RunJobFlowRequest()
@@ -53,7 +53,7 @@ public class DriverAWSPartA
 				.withReleaseLabel("emr-4.7.0")
 				.withInstances(instances)
 				.withSteps(stepsConfig)				
-				.withLogUri("s3n://s2-or-yoed-ass2/logs/")		   		 
+				.withLogUri("s3n://yoed-or-two/logs/")		   		 
         		.withJobFlowRole("EMR_EC2_DefaultRole")
         		.withServiceRole("EMR_DefaultRole");       	
         
@@ -70,34 +70,35 @@ public class DriverAWSPartA
     {
         
 		//arg1
-		String outputPathL1= "s3n://s2-or-yoed-ass2/output-Layer1" + rnd;
-		String outputPathL2 = "s3n://s2-or-yoed-ass2/output-Layer2" + rnd;
-		String outputPathL3 = "s3n://s2-or-yoed-ass2/output-Layer3" + rnd;
-		String outputPathL4 = "s3n://s2-or-yoed-ass2/output-Layer4" + rnd;
+		String outputPathL1= "s3n://yoed-or-two/output/output-Layer1" + rnd;
+		String outputPathL2 = "s3n://yoed-or-two/output/output-Layer2" + rnd;
+		String outputPathL3 = "s3n://yoed-or-two/output/output-Layer3" + rnd;
+		String outputPathL4 = "s3n://yoed-or-two/output/output-Layer4" + rnd;
 		
 		
 		//corpus
 		//String arg0 = "s3://datasets.elasticmapreduce/ngrams/books/20090715/eng-gb-all/5gram/data"; 
-        String arg0 =  "s3://dsp112/eng.corp.10k";
+        //String arg0 =  "s3://dsp112/eng.corp.10k";
+		String arg0 =  "s3n://yoed-or-two/eng.corp.10k";
         // TODO Change corpus
        
         
         HadoopJarStepConfig[] hadoopJarsStep = new HadoopJarStepConfig[] 
 		{
 			new HadoopJarStepConfig()
-			.withJar("s3n://s2-or-yoed-ass2/Layer1.jar")
+			.withJar("s3n://yoed-or-two/Layer1.jar")
             .withMainClass("Layer1.class")
-            .withArgs(arg0, outputPathL1),
+            .withArgs(arg0 , outputPathL1),
             new HadoopJarStepConfig()
-			.withJar("s3n://s2-or-yoed-ass2/Layer2.jar")
+			.withJar("s3n://yoed-or-two/Layer2.jar")
             .withMainClass("Layer2.class") 
             .withArgs(outputPathL1, outputPathL2),
             new HadoopJarStepConfig()
-			.withJar("s3n://s2-or-yoed-ass2/Layer3.jar")
+			.withJar("s3n://yoed-or-two/Layer3.jar")
             .withMainClass("Layer3.class")
             .withArgs(outputPathL2, outputPathL3),
             new HadoopJarStepConfig()
-			.withJar("s3n://s2-or-yoed-ass2/Layer4A.jar")
+			.withJar("s3n://yoed-or-two/Layer4A.jar")
             .withMainClass("Layer4A.class") 
             .withArgs(outputPathL3, outputPathL4, kVal)
 		};
