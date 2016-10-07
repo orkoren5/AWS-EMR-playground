@@ -75,7 +75,7 @@ public class Layer3 {
 		    Job job = Job.getInstance(conf, "ass2");
 		    job.setJarByClass(Layer3.class);
 		    job.setMapperClass(Layer3_Mapper.class);
-		    job.setCombinerClass(Layer3_Reducer.class);
+		    //job.setCombinerClass(Layer3_Reducer.class);
 		    job.setReducerClass(Layer3_Reducer.class);
 		    job.setMapOutputKeyClass(WordWordDecade.class);
 		    job.setMapOutputValueClass(DSLayer3.class);

@@ -2,6 +2,7 @@
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import com.amazonaws.AmazonClientException;
 import com.amazonaws.auth.AWSCredentials;
@@ -20,12 +21,14 @@ import com.amazonaws.services.elasticmapreduce.model.StepConfig;
 
 public class EMRDriver {
 
-	private final static String ROOT_KEY_PATH = "./rootkey.csv";
+	private final static String ROOT_KEY_PATH = "pro.properties";
 	
 	public static void main(String[] args) {
+			
+			String rnd = UUID.randomUUID().toString();
 
 	 	    AWSCredentials credentials = null; 	   
-		    try {
+		    try {	    	
 		    	System.out.println("Loading credentials...");
 		    	credentials = new PropertiesCredentials(new File(ROOT_KEY_PATH));	    	
 		        //credentials = new ProfileCredentialsProvider("default").getCredentials();
@@ -40,13 +43,13 @@ public class EMRDriver {
 		    
 			AmazonElasticMapReduce mapReduce = new AmazonElasticMapReduceClient(credentials);
 			mapReduce.setRegion(Region.getRegion(Regions.US_EAST_1));
-			List<StepConfig> steps = createStepsList();
+			List<StepConfig> steps = createStepsList(rnd, args[0],args[1]);
 			
 			JobFlowInstancesConfig instances = new JobFlowInstancesConfig()
 			    .withInstanceCount(2)
 			    .withMasterInstanceType(InstanceType.M1Small.toString())
 			    .withSlaveInstanceType(InstanceType.M1Small.toString())
-			    .withHadoopVersion("2.7.1").withEc2KeyName("home")
+			    .withHadoopVersion("2.7.2").withEc2KeyName("emr-yoed")
 			    .withKeepJobFlowAliveWhenNoSteps(false)
 			    .withPlacement(new PlacementType("us-east-1a"));
 			 
@@ -55,7 +58,7 @@ public class EMRDriver {
 			    .withInstances(instances)
 			    .withSteps(steps)
 			    .withReleaseLabel("emr-4.7.0")
-			    .withLogUri("s3n://ass2-or-yoed/log/")
+			    .withLogUri("s3n://yoed-or-two/logs/")
 			    .withServiceRole("EMR_DefaultRole")
 			    .withJobFlowRole("EMR_EC2_DefaultRole");
 
@@ -65,34 +68,50 @@ public class EMRDriver {
 
 	}
 	
-	private static List<StepConfig> createStepsList() {
+	private static List<StepConfig> createStepsList(String rnd, String kVal , String th) {
 		
 		List<StepConfig> steps = new ArrayList<StepConfig>();
 		
+		//arg1
+				String outputPathL1= "s3n://yoed-or-two/output/output-Layer1" + rnd;
+				String outputPathL2 = "s3n://yoed-or-two/output/output-Layer2" + rnd;
+				String outputPathL3 = "s3n://yoed-or-two/output/output-Layer3" + rnd;
+				String outputPathL4A = "s3n://yoed-or-two/output/output-Layer4A" + rnd;
+				String outputPathL4B = "s3n://yoed-or-two/output/output-Layer4B" + rnd;
+				
+		
+				//corpus
+				String arg0 = "s3://datasets.elasticmapreduce/ngrams/books/20090715/eng-gb-all/5gram/data"; 
+		        //String arg0 =  "s3://dsp112/eng.corp.10k";
+				//String arg0 =  "s3n://yoed-or-two/eng.corp.10k";
+		        // TODO Change corpus
+				
+				
 		//////////////
 		// Step 1
 		/////////////
 		HadoopJarStepConfig hadoopJarStep1 = new HadoopJarStepConfig()
-	    .withJar("s3n://ass2-or-yoed/ass2.jar") // This should be a full map reduce application.
-	    .withMainClass("Layer1")
-	    .withArgs("s3n://ass2-or-yoed/input/", "s3n://ass2-or-yoed/step1_output/");
+				.withJar("s3n://yoed-or-two/Layer1.jar")
+	            .withMainClass("Layer1.class")
+	            .withArgs(arg0 , outputPathL1);
+        
 	 
 		StepConfig stepConfig1 = new StepConfig()
 		    .withName("layer1")
 		    .withHadoopJarStep(hadoopJarStep1)
 		    .withActionOnFailure("TERMINATE_JOB_FLOW");
 		steps.add(stepConfig1);
-		
+				
 		//////////////
 		// Step 2
 		/////////////
 		HadoopJarStepConfig hadoopJarStep2 = new HadoopJarStepConfig()
-	    .withJar("s3n://ass2-or-yoed/ass2.jar") // This should be a full map reduce application.
-	    .withMainClass("Layer2")
-	    .withArgs("s3n://ass2-or-yoed/step1_output/", "s3n://ass2-or-yoed/step2_output/");
+				.withJar("s3n://yoed-or-two/Layer2.jar")
+	            .withMainClass("Layer2.class") 
+	            .withArgs(outputPathL1, outputPathL2);
 	 
 		StepConfig stepConfig2 = new StepConfig()
-		    .withName("layer1")
+		    .withName("layer2")
 		    .withHadoopJarStep(hadoopJarStep2)
 		    .withActionOnFailure("TERMINATE_JOB_FLOW");
 		steps.add(stepConfig2);
@@ -101,12 +120,12 @@ public class EMRDriver {
 		// Step 3
 		/////////////
 		HadoopJarStepConfig hadoopJarStep3 = new HadoopJarStepConfig()
-	    .withJar("s3n://ass2-or-yoed/ass2.jar") // This should be a full map reduce application.
-	    .withMainClass("Layer3")
-	    .withArgs("s3n://ass2-or-yoed/step2_output/", "s3n://ass2-or-yoed/step3_output/");
+				.withJar("s3n://yoed-or-two/Layer3.jar")
+	            .withMainClass("Layer3.class")
+	            .withArgs(outputPathL2, outputPathL3);
 	 
 		StepConfig stepConfig3 = new StepConfig()
-		    .withName("layer1")
+		    .withName("layer3")
 		    .withHadoopJarStep(hadoopJarStep3)
 		    .withActionOnFailure("TERMINATE_JOB_FLOW");
 		steps.add(stepConfig3);
@@ -115,12 +134,12 @@ public class EMRDriver {
 		// Step 4A
 		/////////////
 		HadoopJarStepConfig hadoopJarStep4A = new HadoopJarStepConfig()
-	    .withJar("s3n://ass2-or-yoed/ass2.jar") // This should be a full map reduce application.
-	    .withMainClass("Layer4A")
-	    .withArgs("s3n://ass2-or-yoed/step3_output/", "s3n://ass2-or-yoed/step4A_output/");
+				.withJar("s3n://yoed-or-two/Layer4A.jar")
+	            .withMainClass("Layer4A.class") 
+	            .withArgs(outputPathL3, outputPathL4A, kVal);
 	 
 		StepConfig stepConfig4A = new StepConfig()
-		    .withName("layer1")
+		    .withName("layer4A")
 		    .withHadoopJarStep(hadoopJarStep4A)
 		    .withActionOnFailure("TERMINATE_JOB_FLOW");
 		steps.add(stepConfig4A);
@@ -129,12 +148,12 @@ public class EMRDriver {
 		// Step 4B
 		/////////////
 		HadoopJarStepConfig hadoopJarStep4B = new HadoopJarStepConfig()
-	    .withJar("s3n://ass2-or-yoed/ass2.jar") // This should be a full map reduce application.
-	    .withMainClass("Layer4B")
-	    .withArgs("s3n://ass2-or-yoed/step3_output/", "s3n://ass2-or-yoed/step4B_output/");
+				.withJar("s3n://yoed-or-two/Layer4B.jar")
+	            .withMainClass("Layer4B.class") 
+	            .withArgs(outputPathL3, outputPathL4B, th);
 	 
 		StepConfig stepConfig4B = new StepConfig()
-		    .withName("layer1")
+		    .withName("layer4B")
 		    .withHadoopJarStep(hadoopJarStep4B)
 		    .withActionOnFailure("TERMINATE_JOB_FLOW");
 		steps.add(stepConfig4B);
