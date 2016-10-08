@@ -47,8 +47,8 @@ public class EMRDriver {
 			
 			JobFlowInstancesConfig instances = new JobFlowInstancesConfig()
 			    .withInstanceCount(2)
-			    .withMasterInstanceType(InstanceType.M1Small.toString())
-			    .withSlaveInstanceType(InstanceType.M1Small.toString())
+			    .withMasterInstanceType(InstanceType.M3Xlarge.toString())
+			    .withSlaveInstanceType(InstanceType.M3Xlarge.toString())
 			    .withHadoopVersion("2.7.2").withEc2KeyName("emr-yoed")
 			    .withKeepJobFlowAliveWhenNoSteps(false)
 			    .withPlacement(new PlacementType("us-east-1a"));
@@ -64,7 +64,7 @@ public class EMRDriver {
 
 			RunJobFlowResult runJobFlowResult = mapReduce.runJobFlow(runFlowRequest);
 			String jobFlowId = runJobFlowResult.getJobFlowId();
-			System.out.println("Ran job flow with id: " + jobFlowId);
+			System.out.println("Run job flow with id: " + jobFlowId);
 
 	}
 	
@@ -81,9 +81,9 @@ public class EMRDriver {
 				
 		
 				//corpus
-				String arg0 = "s3://datasets.elasticmapreduce/ngrams/books/20090715/eng-gb-all/5gram/data"; 
+				//String arg0 = "s3://datasets.elasticmapreduce/ngrams/books/20090715/eng-gb-all/5gram/data"; 
 		        //String arg0 =  "s3://dsp112/eng.corp.10k";
-				//String arg0 =  "s3n://yoed-or-two/eng.corp.10k";
+				String arg0 =  "s3n://yoed-or-two/eng.corp.10k";
 		        // TODO Change corpus
 				
 				

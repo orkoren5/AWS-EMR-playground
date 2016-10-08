@@ -23,6 +23,7 @@ public class Layer3 {
 		 * This mapper does nothing actually.. only passes the key-values as is to the reducer
 		 */
 		protected void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
+			System.out.println("#### MAPPING L3: " + value.toString());
 			String[] keyValue = value.toString().split("\t");
 			String str_wwdKey = keyValue[0];
 			String str_value = keyValue[1];
@@ -38,7 +39,7 @@ public class Layer3 {
 				return;
 			}
 
-			//System.out.println("Mapped: " + value);			
+			System.out.println("Mapper Output : Key:" + wwdKey.toString() + ", Value " + ds.toString());
 			context.write(wwdKey, ds);
 		}
 
@@ -49,7 +50,7 @@ public class Layer3 {
 		public void reduce(WordWordDecade key, Iterable<DSLayer3> values, Context context)
 				throws IOException, InterruptedException {
 		
-			//System.out.println("Reducing: " + key.toString());
+			System.out.println("Reducing L3: " + key.toString());
 			long pairNum = 0, 
 				word1Num = 0, 
 				word2Num = 0; 
@@ -63,7 +64,7 @@ public class Layer3 {
 					word2Num = value.getWordSum();
 				}
 			}
-			
+			System.out.println("Writing - Key: " + key.toString() + ", Value: " + pairNum + " " + word1Num+ " " + word2Num);
 			context.write(key, DataStructureBase.create(pairNum, word1Num, word2Num));
 		}
 	}

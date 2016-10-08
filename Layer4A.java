@@ -24,7 +24,7 @@ public class Layer4A
 	public static class Layer4A_Mapper extends Mapper<LongWritable, Text, WordWordDecade, DataStructureBase> {
 	
 		protected void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
-			//System.out.println("MAPPING: " + value);
+			System.out.println("MAPPING 4A: " + value);
 			
 			String[] keyValue = value.toString().split("\t");
 			String str_wwdKey = keyValue[0];
@@ -44,7 +44,7 @@ public class Layer4A
 			}
 			DSLayer4 ds4 = (DSLayer4) ds;
 			DataStructureBase ds5 = DataStructureBase.create(wwdKey.getWord1(),wwdKey.getWord2(), ds4.getPairSum() , ds4.getWord1Sum(), ds4.getWord2Sum());
-			//System.out.println("Mapper Output: Key:" + wwdKey.toString() + ", Value:" + ds5.toString());
+			System.out.println("Mapper Output: Key:" + wwdKey.toString() + ", Value:" + ds5.toString());
 			context.write(wwdKey, ds5);		
 		}
 	}
@@ -52,6 +52,7 @@ public class Layer4A
 	public static class Layer4A_GroupingComparator extends WritableComparator {
 	    protected Layer4A_GroupingComparator() {
 	        super(WordWordDecade.class, true);
+	        System.out.println("Layer4A_GroupingComparator");
 	    }   
 	    
 	    @SuppressWarnings("rawtypes")
@@ -59,7 +60,7 @@ public class Layer4A
 	    public int compare(WritableComparable w1, WritableComparable w2) {
 	    	WordWordDecade k1 = (WordWordDecade)w1;
 	    	WordWordDecade k2 = (WordWordDecade)w2;
-	         	    	
+	    	System.out.println("Layer4A_GroupingComparator Integer.compare(k1.getDecade(), k2.getDecade():" + Integer.compare(k1.getDecade(), k2.getDecade()));
 			return Integer.compare(k1.getDecade(), k2.getDecade());
 	    }
 	}
@@ -69,8 +70,9 @@ public class Layer4A
 		private int k;
 		
 		public void setup(Context context) {
-			System.out.println("--------------REDUCER SETUP---------------");
+			System.out.println("--------------REDUCER 4A SETUP---------------");
 			k = new Integer(context.getConfiguration().get("k"));
+			System.out.println("k = " + k);
 		}
 		
 		/**
@@ -101,7 +103,7 @@ public class Layer4A
 		public void reduce(WordWordDecade key, Iterable<DSLayer5> values, Context context)
 				throws IOException, InterruptedException {
 		
-			//System.out.println("Reducing: " + key.toString());
+			System.out.println("Reducing L4A: " + key.toString());
 			
 			// The total number of words in this decade will be the first value in the iterable
 			// That's because we defined the secondary sort to be WordWordDecade's sort, and we defined a grouping comparator		
@@ -117,14 +119,15 @@ public class Layer4A
 				double pmi = Math.log(value.getNum1()) + Math.log(sumWordsInDecade) - Math.log(value.getNum2()) - Math.log(value.getNum3());
 				putValueInOrderedArray(pmi, new_wwdKey, maxKPmi, maxKPmi_keys);
 				numKeys++;
-				//System.out.println(new_wwdKey.toString() + " " + value.getNum1() + " " + value.getNum2() + " " + value.getNum3() + " " + sumWordsInDecade + " " + pmi);
+				System.out.println(new_wwdKey.toString() + " " + value.getNum1() + " " + value.getNum2() + " " + value.getNum3() + " " + sumWordsInDecade + " " + pmi);
 			}	
 			
 			// Writes to context the max k couples which scored the highest PMIs
 			int min = Math.min(k, numKeys);
 			for (int i = k-1; i >= k - min; --i) {
 				DoubleWritable pmiCalcW = new DoubleWritable(maxKPmi[i]);
-				WordWordDecade wwdKey =  maxKPmi_keys[i];				
+				WordWordDecade wwdKey =  maxKPmi_keys[i];	
+				System.out.println("Writing - Key: " + wwdKey.toString() + ", Value: " + pmiCalcW.toString());
 				context.write(wwdKey, pmiCalcW);
 			}	
 		}
