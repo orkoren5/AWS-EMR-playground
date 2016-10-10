@@ -46,7 +46,7 @@ public class EMRDriver {
 			List<StepConfig> steps = createStepsList(rnd, args[0],args[1]);
 			
 			JobFlowInstancesConfig instances = new JobFlowInstancesConfig()
-			    .withInstanceCount(17)
+			    .withInstanceCount(4)
 			    .withMasterInstanceType(InstanceType.M1Medium.toString())
 			    .withSlaveInstanceType(InstanceType.M1Medium.toString())
 			    .withHadoopVersion("2.7.1").withEc2KeyName("emr-yoed")
@@ -82,9 +82,9 @@ public class EMRDriver {
 				
 		
 				//corpus
-				String arg0 = "s3://datasets.elasticmapreduce/ngrams/books/20090715/eng-gb-all/5gram/data"; 
+				//String arg0 = "s3://datasets.elasticmapreduce/ngrams/books/20090715/eng-gb-all/5gram/data"; 
 		        //String arg0 =  "s3://dsp112/eng.corp.10k";
-				//String arg0 =  "s3n://yoed-or-two/eng.corp.10k";
+				String arg0 =  "s3n://yoed-or-two/eng.corp.10k";
 		        // TODO Change corpus
 				
 				

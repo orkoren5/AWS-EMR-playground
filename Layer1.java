@@ -131,10 +131,24 @@ public class Layer1 {
 		public int getPartition(WordWordDecade key, LongWritable value, int numPartitions)
 		{
 			
-			int decade = key.getDecade() + 2; 
+			int decade = key.getDecade(); 
 			int decadeToPrint = decade % 12;
 			System.out.println("PartitionerClass L1 decadeToPrint:" + decadeToPrint);
-			return decadeToPrint; //12 - num of decade from 1900 to 2020
+			return decadeToPrint % numPartitions; //12 - num of decade from 1900 to 2020
+			
+			/*if(key.getDecade() < 1910)
+			{
+			   return 0;
+			}
+			else if(key.getDecade()<1920)
+			{
+			   return 1 % numPartitions;
+			}
+			else
+			{
+			   return 2 % numPartitions;
+			}*/
+			
 		}
 	}
   
@@ -166,6 +180,7 @@ public class Layer1 {
     Job job = Job.getInstance(conf, "ass2");
     job.setJarByClass(Layer1.class);
     job.setMapperClass(Layer1Mapper.class);
+    job.setPartitionerClass(PartitionerClass.class);
     job.setCombinerClass(LayerOneReducer.class);
     job.setReducerClass(LayerOneReducer.class);
     job.setOutputKeyClass(WordWordDecade.class);

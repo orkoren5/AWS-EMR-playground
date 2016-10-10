@@ -9,10 +9,11 @@ import org.apache.hadoop.io.WritableComparable;
 import org.apache.hadoop.io.WritableComparator;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.Mapper;
+import org.apache.hadoop.mapreduce.Partitioner;
 import org.apache.hadoop.mapreduce.Reducer;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
-import org.apache.hadoop.mapreduce.lib.output.MultipleOutputs;
+//import org.apache.hadoop.mapreduce.lib.output.MultipleOutputs;
 
 import DataStructures.DSLayer2;
 import DataStructures.DSLayer3;
@@ -20,20 +21,21 @@ import DataStructures.DataStructureBase;
 import DataStructures.WordWordDecade;
 
 
+
 public class Layer2 {
 
 	public static class Layer2_Mapper extends Mapper<LongWritable, Text, WordWordDecade, DataStructureBase> {
 		
-		private MultipleOutputs<WordWordDecade, DataStructureBase> mos;
+		//private MultipleOutputs<WordWordDecade, DataStructureBase> mos;
 		 
 		public void setup(Context context) {
 			System.out.println("--------------MAPPER L2 SETUP----------------");
-			 mos = new MultipleOutputs<WordWordDecade, DataStructureBase>(context);
+			 //mos = new MultipleOutputs<WordWordDecade, DataStructureBase>(context);
 		}
 		
 		public void cleanup(Context context) throws IOException, InterruptedException {
 				System.out.println("--------------MAPPER L2 CLEANUP-----------");
-				mos.close();
+				//mos.close();
 		}
 		protected void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
 			System.out.println("MAPPING L2: " + value);
@@ -51,7 +53,10 @@ public class Layer2 {
 				return;
 			}
 			
-			context.write(wwdKey, DataStructureBase.create(wwdKey.getWord2(), count));
+			DataStructureBase dstmp = DataStructureBase.create(wwdKey.getWord2(), count);
+			context.write(wwdKey, dstmp);
+			System.out.println("Mapper Output : Key:" + wwdKey.toString() + ", Value " + dstmp.toString());
+			
 			if (wwdKey.isCouple()) {
 				DataStructureBase ds2 = DataStructureBase.create(wwdKey.getWord1(), count);
 				wwdKey.swap();
@@ -85,6 +90,24 @@ public class Layer2 {
 			}	
 	    }
 	}
+	
+	
+	
+
+	  public static class PartitionerClass extends Partitioner<WordWordDecade, LongWritable>
+		{
+			@Override
+			public int getPartition(WordWordDecade key, LongWritable value, int numPartitions)
+			{
+				int decade = key.getDecade(); 
+				int decadeToPrint = decade % 12;
+				System.out.println("PartitionerClass L1 decadeToPrint:" + decadeToPrint);
+				return decadeToPrint % numPartitions; //12 - num of decade from 1900 to 2020
+				
+			}
+		}
+
+	
 	
 	public static class Layer2_Reducer extends Reducer<WordWordDecade, DSLayer2, WordWordDecade, DataStructureBase> {
 		
@@ -126,6 +149,7 @@ public class Layer2 {
 		    job.setMapperClass(Layer2.Layer2_Mapper.class);
 		    //job.setCombinerClass(Layer2.Layer2_Reducer.class);
 		    job.setGroupingComparatorClass(Layer2.Layer2_GroupingComparator.class);
+		    job.setPartitionerClass(PartitionerClass.class);
 		    job.setReducerClass(Layer2.Layer2_Reducer.class);
 		    job.setMapOutputKeyClass(WordWordDecade.class);
 		    job.setMapOutputValueClass(DSLayer2.class);

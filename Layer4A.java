@@ -9,6 +9,7 @@ import org.apache.hadoop.io.WritableComparable;
 import org.apache.hadoop.io.WritableComparator;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.Mapper;
+import org.apache.hadoop.mapreduce.Partitioner;
 import org.apache.hadoop.mapreduce.Reducer;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
@@ -64,6 +65,19 @@ public class Layer4A
 			return Integer.compare(k1.getDecade(), k2.getDecade());
 	    }
 	}
+	
+  public static class PartitionerClass extends Partitioner<WordWordDecade, LongWritable>
+		{
+			@Override
+			public int getPartition(WordWordDecade key, LongWritable value, int numPartitions)
+			{
+				int decade = key.getDecade(); 
+				int decadeToPrint = decade % 12;
+				System.out.println("PartitionerClass L1 decadeToPrint:" + decadeToPrint);
+				return decadeToPrint % numPartitions; //12 - num of decade from 1900 to 2020
+				
+			}
+		}
 	
 	public static class Layer4A_Reducer extends Reducer<WordWordDecade, DSLayer5, WordWordDecade, DoubleWritable> {
 		
@@ -145,6 +159,7 @@ public class Layer4A
 		    job.setGroupingComparatorClass(Layer4A.Layer4A_GroupingComparator.class);
 		   // job.setCombinerClass(Layer4_Reducer.class);
 		    job.setReducerClass(Layer4A_Reducer.class);
+		    job.setPartitionerClass(PartitionerClass.class);
 		    job.setMapOutputKeyClass(WordWordDecade.class);
 		    job.setMapOutputValueClass(DSLayer5.class);
 		    job.setOutputKeyClass(WordWordDecade.class);
