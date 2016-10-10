@@ -52,9 +52,9 @@ public class EMRDriver {
 			    .withHadoopVersion("2.7.1").withEc2KeyName("emr-yoed")
 			    .withKeepJobFlowAliveWhenNoSteps(false)
 			    .withPlacement(new PlacementType("us-east-1a"));
-			 
+
 			RunJobFlowRequest runFlowRequest = new RunJobFlowRequest()
-			    .withName("jobname")
+			    .withName("ass2")
 			    .withInstances(instances)
 			    .withSteps(steps)
 			    .withReleaseLabel("emr-4.3.0")
