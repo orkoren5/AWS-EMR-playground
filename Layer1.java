@@ -88,7 +88,7 @@ public class Layer1 {
     	{
     		LongWritable amount = new LongWritable(ngram_amount);
     		LongWritable decade_amount = new LongWritable(ngram_amount*size);
-			int midWordIndex = (int) Math.ceil(size / 2.0);
+			int midWordIndex = size/2;
 			String middleWord = validWords.remove(midWordIndex);
 	
 			//<{*,*,decade},amount>
@@ -129,26 +129,10 @@ public class Layer1 {
 	{
 		@Override
 		public int getPartition(WordWordDecade key, LongWritable value, int numPartitions)
-		{
-			
-			int decade = key.getDecade(); 
-			int decadeToPrint = decade % 12;
+		{					
+			int decadeToPrint = key.getDecade() % 12;
 			//System.out.println("PartitionerClass L1 decadeToPrint:" + decadeToPrint);
 			return decadeToPrint % numPartitions; //12 - num of decade from 1900 to 2020
-			
-			/*if(key.getDecade() < 1910)
-			{
-			   return 0;
-			}
-			else if(key.getDecade()<1920)
-			{
-			   return 1 % numPartitions;
-			}
-			else
-			{
-			   return 2 % numPartitions;
-			}*/
-			
 		}
 	}
   
