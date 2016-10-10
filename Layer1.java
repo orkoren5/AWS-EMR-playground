@@ -33,7 +33,7 @@ public class Layer1 {
 	 * Setup before mapping - Gets the stop words from the web and puts them in a HashSet
 	 */
 	public void setup(Context context) {
-		System.out.println("--------------MAPPER L1 SETUP: Get stop words from web----------------");
+		//System.out.println("--------------MAPPER L1 SETUP: Get stop words from web----------------");
 		stopWords = new HashSet<String>();
         URL url;
 		try {
@@ -47,24 +47,24 @@ public class Layer1 {
 			e.printStackTrace();
 			return;
 		} 	    		
-		System.out.println(stopWords.toString());
+		//System.out.println(stopWords.toString());
 	}
 		
     public void map(Object key, Text value, Context context) throws IOException, InterruptedException {
-    	System.out.println("#### MAPPING L1: " + value.toString());    	
+    	//System.out.println("#### MAPPING L1: " + value.toString());    	
     	String[] splitted = value.toString().split("\t");	
     	
     	// if broken line
     	if (splitted.length < 3)
     	{ 
-    		System.out.println("splitted.length:" + splitted.length + " < 3: -> return");
+    		//System.out.println("splitted.length:" + splitted.length + " < 3: -> return");
     		return;
     	}
     	
     	int year = Integer.parseInt(splitted[1]);
     	if (year < 1900)
     	{
-    		System.out.println("decade < 1900: -> return");
+    		//System.out.println("decade < 1900: -> return");
     		return;
     	}
     	
@@ -80,7 +80,7 @@ public class Layer1 {
 					validWords.add(word);
 			}
     	}
-    	System.out.println("Valid words: " + validWords);
+    	//System.out.println("Valid words: " + validWords);
     	
     	//split the validWords to <key,val> for the Reducer
     	int size = validWords.size();
@@ -93,11 +93,11 @@ public class Layer1 {
 	
 			//<{*,*,decade},amount>
 			WordWordDecade emptyPair = new WordWordDecade(year);
-			System.out.println("Mapper Output emptyPair- Key:" + emptyPair.toString() + ", Value:" + amount.toString());
+			//System.out.println("Mapper Output emptyPair- Key:" + emptyPair.toString() + ", Value:" + amount.toString());
 			context.write(emptyPair , decade_amount);
 			
 			WordWordDecade wordMiddle = new WordWordDecade(middleWord, year);
-			System.out.println("Mapper Output wordMiddle: Key:" + wordMiddle.toString() + ", Value " + amount.toString());
+			//System.out.println("Mapper Output wordMiddle: Key:" + wordMiddle.toString() + ", Value " + amount.toString());
 			context.write(wordMiddle , amount);
 		
 			
@@ -106,11 +106,11 @@ public class Layer1 {
 				//<{middleWord,wi,decade},amount>
 				// value of c(w,wi) or c(wi,w)
 				WordWordDecade wordPair = new WordWordDecade(middleWord, word, year);
-				System.out.println("Mapper Output words: Key:" + wordPair.toString() + ", Value " + amount.toString());
+				//System.out.println("Mapper Output words: Key:" + wordPair.toString() + ", Value " + amount.toString());
 				context.write(wordPair , amount);
 				
 				WordWordDecade wordSingle = new WordWordDecade(word, year);
-				System.out.println("Mapper Output wordSingle: Key:" + wordSingle.toString() + ", Value " + amount.toString());
+				//System.out.println("Mapper Output wordSingle: Key:" + wordSingle.toString() + ", Value " + amount.toString());
 				context.write(wordSingle , amount);
 		
 			}
@@ -133,7 +133,7 @@ public class Layer1 {
 			
 			int decade = key.getDecade(); 
 			int decadeToPrint = decade % 12;
-			System.out.println("PartitionerClass L1 decadeToPrint:" + decadeToPrint);
+			//System.out.println("PartitionerClass L1 decadeToPrint:" + decadeToPrint);
 			return decadeToPrint % numPartitions; //12 - num of decade from 1900 to 2020
 			
 			/*if(key.getDecade() < 1910)
@@ -161,14 +161,14 @@ public class Layer1 {
                        Context context
                        ) throws IOException, InterruptedException 
     {
-       System.out.println("$$ Reducing L1: " + key.toString());	
+       //System.out.println("$$ Reducing L1: " + key.toString());	
 	   long sum = 0;
 	   for (LongWritable val : values) 
 	   {
 	     sum += val.get();
 	   }
 	   LongWritable sumToPrint = new LongWritable(sum);
-	   System.out.println("Writing - Key: " + key.toString() + ", Value: " + sumToPrint.toString());
+	   //System.out.println("Writing - Key: " + key.toString() + ", Value: " + sumToPrint.toString());
 	   context.write(key, sumToPrint); 
     }
   }

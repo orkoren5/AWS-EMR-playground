@@ -29,16 +29,16 @@ public class Layer2 {
 		//private MultipleOutputs<WordWordDecade, DataStructureBase> mos;
 		 
 		public void setup(Context context) {
-			System.out.println("--------------MAPPER L2 SETUP----------------");
+			//System.out.println("--------------MAPPER L2 SETUP----------------");
 			 //mos = new MultipleOutputs<WordWordDecade, DataStructureBase>(context);
 		}
 		
 		public void cleanup(Context context) throws IOException, InterruptedException {
-				System.out.println("--------------MAPPER L2 CLEANUP-----------");
+				//System.out.println("--------------MAPPER L2 CLEANUP-----------");
 				//mos.close();
 		}
 		protected void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
-			System.out.println("MAPPING L2: " + value);
+			//System.out.println("MAPPING L2: " + value);
 			String[] keyValue = value.toString().split("\t");			
 			long count = 0;			
 			WordWordDecade wwdKey = null;
@@ -55,12 +55,12 @@ public class Layer2 {
 			
 			DataStructureBase dstmp = DataStructureBase.create(wwdKey.getWord2(), count);
 			context.write(wwdKey, dstmp);
-			System.out.println("Mapper Output : Key:" + wwdKey.toString() + ", Value " + dstmp.toString());
+			//System.out.println("Mapper Output : Key:" + wwdKey.toString() + ", Value " + dstmp.toString());
 			
 			if (wwdKey.isCouple()) {
 				DataStructureBase ds2 = DataStructureBase.create(wwdKey.getWord1(), count);
 				wwdKey.swap();
-				System.out.println("Mapper Output : Key:" + wwdKey.toString() + ", Value " + ds2.toString());
+				//System.out.println("Mapper Output : Key:" + wwdKey.toString() + ", Value " + ds2.toString());
 				context.write(wwdKey, ds2);
 			}
 		}
@@ -70,7 +70,7 @@ public class Layer2 {
 	public static class Layer2_GroupingComparator extends WritableComparator {
 	    protected Layer2_GroupingComparator() {
 	        super(WordWordDecade.class, true);
-	        System.out.println("Layer2_GroupingComparator");
+	        //System.out.println("Layer2_GroupingComparator");
 	    }   
 	    
 	    @SuppressWarnings("rawtypes")
@@ -82,10 +82,10 @@ public class Layer2 {
 			int res1 = Integer.compare(k1.getDecade(), k2.getDecade());
 			int res2 = k1.getWord1().compareTo(k2.getWord1());				
 			if(res1 != 0) {
-				 System.out.println("Layer2_GroupingComparator res1:" + res1);
+				 //System.out.println("Layer2_GroupingComparator res1:" + res1);
 				return res1;
 			} else {
-				System.out.println("Layer2_GroupingComparator res2:" + res2);
+				//System.out.println("Layer2_GroupingComparator res2:" + res2);
 				return res2;
 			}	
 	    }
@@ -94,14 +94,14 @@ public class Layer2 {
 	
 	
 
-	  public static class PartitionerClass extends Partitioner<WordWordDecade, LongWritable>
+	  public static class PartitionerClass extends Partitioner<WordWordDecade, DataStructureBase>
 		{
 			@Override
-			public int getPartition(WordWordDecade key, LongWritable value, int numPartitions)
+			public int getPartition(WordWordDecade key, DataStructureBase value, int numPartitions)
 			{
 				int decade = key.getDecade(); 
 				int decadeToPrint = decade % 12;
-				System.out.println("PartitionerClass L1 decadeToPrint:" + decadeToPrint);
+				//System.out.println("PartitionerClass L1 decadeToPrint:" + decadeToPrint);
 				return decadeToPrint % numPartitions; //12 - num of decade from 1900 to 2020
 				
 			}
@@ -115,25 +115,25 @@ public class Layer2 {
 				throws IOException, InterruptedException {
 		
 			Iterator<DSLayer2> it = values.iterator();
-			System.out.println("Reducing L2: " + key.toString());				
+			//System.out.println("Reducing L2: " + key.toString());				
 			
 			// The total number of word 1 will be the first value in the iterable
 			// That's because we defined the secondary sort to be WordWordDecade's sort			
 			long totalNumberOfWord1 = it.next().getNumber();		
 			
-			System.out.println("totalNumberOfWord1: " + String.valueOf(totalNumberOfWord1));
+			//System.out.println("totalNumberOfWord1: " + String.valueOf(totalNumberOfWord1));
 			
 			// If the key had only one value - then that key had only a decade in it (by design)
 			if (!it.hasNext()) {
 				WordWordDecade new_wwdKey = new WordWordDecade(key.getDecade());
 				DataStructureBase new_value = DataStructureBase.create(totalNumberOfWord1, 0);
-				System.out.println("Writing - Key: " + new_wwdKey.toString() + ", Value: " + new_value.toString());
+				//System.out.println("Writing - Key: " + new_wwdKey.toString() + ", Value: " + new_value.toString());
 				context.write(new_wwdKey, new_value);
 			} else {
 				for (DSLayer2 value : values) {					
 					WordWordDecade new_wwdKey = new WordWordDecade(key.getWord1(), value.getWord(), key.getDecade());
 					DataStructureBase new_value = DataStructureBase.create(value.getNumber(), totalNumberOfWord1);
-					System.out.println("----Writing - Key: " + new_wwdKey.toString() + ", Value: " + new_value.toString());
+					//System.out.println("----Writing - Key: " + new_wwdKey.toString() + ", Value: " + new_value.toString());
 					context.write(new_wwdKey, new_value);
 				}		
 			}
