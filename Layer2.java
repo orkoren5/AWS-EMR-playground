@@ -13,7 +13,6 @@ import org.apache.hadoop.mapreduce.Partitioner;
 import org.apache.hadoop.mapreduce.Reducer;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
-//import org.apache.hadoop.mapreduce.lib.output.MultipleOutputs;
 
 import DataStructures.DSLayer2;
 import DataStructures.DSLayer3;
@@ -26,17 +25,6 @@ public class Layer2 {
 
 	public static class Layer2_Mapper extends Mapper<LongWritable, Text, WordWordDecade, DataStructureBase> {
 		
-		//private MultipleOutputs<WordWordDecade, DataStructureBase> mos;
-		 
-		public void setup(Context context) {
-			//System.out.println("--------------MAPPER L2 SETUP----------------");
-			 //mos = new MultipleOutputs<WordWordDecade, DataStructureBase>(context);
-		}
-		
-		public void cleanup(Context context) throws IOException, InterruptedException {
-				//System.out.println("--------------MAPPER L2 CLEANUP-----------");
-				//mos.close();
-		}
 		protected void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
 			//System.out.println("MAPPING L2: " + value);
 			String[] keyValue = value.toString().split("\t");			
@@ -52,16 +40,15 @@ public class Layer2 {
 				System.out.println("EXCEPTION: " + ex.getStackTrace().toString());
 				return;
 			}
-			
-			DataStructureBase dstmp = DataStructureBase.create(wwdKey.getWord2(), count);
-			context.write(wwdKey, dstmp);
-			//System.out.println("Mapper Output : Key:" + wwdKey.toString() + ", Value " + dstmp.toString());
-			
+						
+			context.write(wwdKey, DataStructureBase.create(wwdKey.getWord2(), count));
 			if (wwdKey.isCouple()) {
 				DataStructureBase ds2 = DataStructureBase.create(wwdKey.getWord1(), count);
 				wwdKey.swap();
 				//System.out.println("Mapper Output : Key:" + wwdKey.toString() + ", Value " + ds2.toString());
 				context.write(wwdKey, ds2);
+			} else {
+				context.write(new WordWordDecade(wwdKey.getDecade()), DataStructureBase.create("", count));
 			}
 		}
 
@@ -113,15 +100,24 @@ public class Layer2 {
 		
 		public void reduce(WordWordDecade key, Iterable<DSLayer2> values, Context context)
 				throws IOException, InterruptedException {
-		
-			Iterator<DSLayer2> it = values.iterator();
-			//System.out.println("Reducing L2: " + key.toString());				
+			
+			// Case when the key is only a decade
+			// Calculates the sum of all the single words to get the amount of all the words in the decade
+			if (key.isDecadeOnly()) {
+				long sumOfAllWordsInDecade = 0;
+				for (DSLayer2 value : values) {	
+					sumOfAllWordsInDecade += value.getNumber();
+				}
+				context.write(key, DataStructureBase.create(sumOfAllWordsInDecade, 0));
+				return;
+			}
+			
+			// Case when the is defined by the first word and decade
+			Iterator<DSLayer2> it = values.iterator();			
 			
 			// The total number of word 1 will be the first value in the iterable
 			// That's because we defined the secondary sort to be WordWordDecade's sort			
 			long totalNumberOfWord1 = it.next().getNumber();		
-			
-			//System.out.println("totalNumberOfWord1: " + String.valueOf(totalNumberOfWord1));
 			
 			// If the key had only one value - then that key had only a decade in it (by design)
 			if (!it.hasNext()) {

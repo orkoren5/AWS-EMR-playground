@@ -82,24 +82,15 @@ public class Layer1 {
     	}
     	//System.out.println("Valid words: " + validWords);
     	
-    	//split the validWords to <key,val> for the Reducer
-    	int size = validWords.size();
-    	if(size > 1)
+    	//split the validWords to <key,val> for the Reducer    	
+    	if(validWords.size() > 1)
     	{
     		LongWritable amount = new LongWritable(ngram_amount);
-    		LongWritable decade_amount = new LongWritable(ngram_amount*size);
-			int midWordIndex = size/2;
-			String middleWord = validWords.remove(midWordIndex);
-	
-			//<{*,*,decade},amount>
-			WordWordDecade emptyPair = new WordWordDecade(year);
-			//System.out.println("Mapper Output emptyPair- Key:" + emptyPair.toString() + ", Value:" + amount.toString());
-			context.write(emptyPair , decade_amount);
-			
+			int midWordIndex =  validWords.size()/2;
+			String middleWord = validWords.remove(midWordIndex);			
 			WordWordDecade wordMiddle = new WordWordDecade(middleWord, year);
 			//System.out.println("Mapper Output wordMiddle: Key:" + wordMiddle.toString() + ", Value " + amount.toString());
 			context.write(wordMiddle , amount);
-		
 			
 			for(String word : validWords)
 			{
@@ -125,7 +116,7 @@ public class Layer1 {
     }    
   }
 
-  public static class PartitionerClass extends Partitioner<WordWordDecade, LongWritable>
+	public static class PartitionerClass extends Partitioner<WordWordDecade, LongWritable>
 	{
 		@Override
 		public int getPartition(WordWordDecade key, LongWritable value, int numPartitions)
@@ -137,13 +128,9 @@ public class Layer1 {
 	}
   
   
-  public static class LayerOneReducer
-       extends Reducer<WordWordDecade,LongWritable,WordWordDecade,LongWritable> 
+  public static class LayerOneReducer extends Reducer<WordWordDecade,LongWritable,WordWordDecade,LongWritable> 
   {
-
-    public void reduce(WordWordDecade key, Iterable<LongWritable> values,
-                       Context context
-                       ) throws IOException, InterruptedException 
+    public void reduce(WordWordDecade key, Iterable<LongWritable> values, Context context) throws IOException, InterruptedException 
     {
        //System.out.println("$$ Reducing L1: " + key.toString());	
 	   long sum = 0;
