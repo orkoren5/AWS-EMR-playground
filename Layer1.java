@@ -151,7 +151,7 @@ public class Layer1 {
     Job job = Job.getInstance(conf, "ass2");
     job.setJarByClass(Layer1.class);
     job.setMapperClass(Layer1Mapper.class);
-    job.setPartitionerClass(PartitionerClass.class);
+    //job.setPartitionerClass(PartitionerClass.class);
     job.setCombinerClass(LayerOneReducer.class);
     job.setReducerClass(LayerOneReducer.class);
     job.setOutputKeyClass(WordWordDecade.class);
