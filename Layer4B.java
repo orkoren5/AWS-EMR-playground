@@ -166,9 +166,9 @@ public class Layer4B
 			}	
 			
 			double FMeasure = calcFMeasure(tp, tn, fp, fn);
-			//System.out.println("FMeasure: " + FMeasure );
+			System.out.println("FMeasure: " + FMeasure );
 			context.write(new Text("TP"), new DoubleWritable((double)tp));
-			context.write(new Text("TB"), new DoubleWritable((double)tn));
+			context.write(new Text("TN"), new DoubleWritable((double)tn));
 			context.write(new Text("FP"), new DoubleWritable((double)fp));
 			context.write(new Text("FN"), new DoubleWritable((double)fn));		
 			context.write(new Text("FMeasure"), new DoubleWritable(FMeasure));
