@@ -74,18 +74,18 @@ public class EMRDriver {
 		List<StepConfig> steps = new ArrayList<StepConfig>();
 		
 		//arg1
-				String outputPathL1= "s3n://yoed-or-two/output/output-Layer1" + rnd;
-				String outputPathL2 = "s3n://yoed-or-two/output/output-Layer2" + rnd;
-				String outputPathL3 = "s3n://yoed-or-two/output/output-Layer3" + rnd;
-				String outputPathL4A = "s3n://yoed-or-two/output/output-Layer4A" + rnd;
-				String outputPathL4B = "s3n://yoed-or-two/output/output-Layer4B" + rnd;
-				
+		String outputPathL1= "s3n://yoed-or-two/output/output-Layer1" + rnd;
+		String outputPathL2 = "s3n://yoed-or-two/output/output-Layer2" + rnd;
+		String outputPathL3 = "s3n://yoed-or-two/output/output-Layer3" + rnd;
+		String outputPathL4A = "s3n://yoed-or-two/output/output-Layer4A" + rnd;
+		String outputPathL4B = "s3n://yoed-or-two/output/output-Layer4B" + rnd;
 		
-				//corpus
-				String arg0 = "s3://datasets.elasticmapreduce/ngrams/books/20090715/eng-gb-all/5gram/data"; 
-		        //String arg0 =  "s3://dsp112/eng.corp.10k";
-				//String arg0 =  "s3n://yoed-or-two/eng.corp.10k";
-		        // TODO Change corpus
+
+		//corpus
+		String arg0 = "s3://datasets.elasticmapreduce/ngrams/books/20090715/eng-gb-all/5gram/data"; 
+        //String arg0 =  "s3://dsp112/eng.corp.10k";
+		//String arg0 =  "s3n://yoed-or-two/eng.corp.10k";
+        // TODO Change corpus
 				
 				
 		//////////////

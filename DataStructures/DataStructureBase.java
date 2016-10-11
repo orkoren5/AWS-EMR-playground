@@ -10,10 +10,6 @@ public abstract class DataStructureBase implements Writable {
 	// Factory methods()
 	///////////////////////////////////////////////////
 	
-	public static DataStructureBase create(long number) {
-		return new DSLayer1(number);
-	}
-	
 	public static DataStructureBase create(String word, long number) {
 		return new DSLayer2(word, number);
 	}
@@ -40,8 +36,6 @@ public abstract class DataStructureBase implements Writable {
 	public static DataStructureBase parse(String value) throws Exception {		
 		String[] splt = value.split(" ");			
 		switch (splt.length) {
-			case 1: // e.g 1000
-				return DataStructureBase.create(Long.valueOf(splt[0]));
 			case 2: 
 				try  // e.g 1000 120040
 				{  				    
