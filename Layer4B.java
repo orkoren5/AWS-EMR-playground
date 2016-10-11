@@ -81,7 +81,7 @@ public class Layer4B
 				{
 					int decade = key.getDecade(); 
 					int decadeToPrint = decade % 12;
-					//System.out.println("PartitionerClass L1 decadeToPrint:" + decadeToPrint);
+					//System.out.println("PartitionerClass decadeToPrint:" + decadeToPrint + "key:" + key.toString() + "value:" + value.toString() );
 					return decadeToPrint % numPartitions; //12 - num of decade from 1900 to 2020
 					
 				}
@@ -101,8 +101,8 @@ public class Layer4B
 			related = getPairsFromTestSetWeb("https://www.cs.bgu.ac.il/~dsp162/wiki.files/wordsim-pos.txt");
 			notRelated = getPairsFromTestSetWeb("https://www.cs.bgu.ac.il/~dsp162/wiki.files/wordsim-neg.txt");
 			threshold = new Double(context.getConfiguration().get("threshold", "1"));
-			//System.out.println(related.toString());
-			//System.out.println(notRelated.toString());
+			System.out.println("related: " +related.toString());
+			System.out.println("notRelated: " + notRelated.toString());
 		}
 		
 		
@@ -151,17 +151,18 @@ public class Layer4B
 			for (DSLayer5 value : values) {				
 				WordWordDecade new_wwdKey = new WordWordDecade(value.getWord1(), value.getWord2(), key.getDecade());				
 				double pmi = Math.log(value.getNum1()) + Math.log(sumWordsInDecade) - Math.log(value.getNum2()) - Math.log(value.getNum3());
+				//System.out.println("value: "+ value.toString() + " PMI " + pmi);
 				if (pmi >= threshold && related.contains(new_wwdKey)) {
-					//System.out.println(new_wwdKey.toString() + ": PMI " + pmi + " TP");
+					System.out.println(new_wwdKey.toString() + ": PMI " + pmi + " TP");
 					++tp;
 				} else if (pmi < threshold && notRelated.contains(new_wwdKey)) {
-					//System.out.println(new_wwdKey.toString() + ": PMI " + pmi + " TN");
+					System.out.println(new_wwdKey.toString() + ": PMI " + pmi + " TN");
 					++tn;
 				} else if (pmi >= threshold && notRelated.contains(new_wwdKey)) {
-					//System.out.println(new_wwdKey.toString() + ": PMI " + pmi + " FN");
+					System.out.println(new_wwdKey.toString() + ": PMI " + pmi + " FN");
 					++fp;
 				} else if (pmi < threshold && related.contains(new_wwdKey)) {
-					//System.out.println(new_wwdKey.toString() + ": PMI " + pmi + " FP");
+					System.out.println(new_wwdKey.toString() + ": PMI " + pmi + " FP");
 					++fn;
 				}					
 			}	
