@@ -102,7 +102,22 @@ public class EMRDriver {
 		    .withHadoopJarStep(hadoopJarStep1)
 		    .withActionOnFailure("TERMINATE_JOB_FLOW");
 		steps.add(stepConfig1);
-				
+			
+		//////////////
+		// Step 1.5
+		/////////////
+		HadoopJarStepConfig hadoopJarStep1_5 = new HadoopJarStepConfig()
+				.withJar("s3n://yoed-or-two/Layer1AndHalf.jar")
+	            .withMainClass("Layer1AndHalf.class")
+	            .withArgs(arg0 , outputPathL1);
+        
+	 
+		StepConfig stepConfig1_5 = new StepConfig()
+		    .withName("layer1_and_half")
+		    .withHadoopJarStep(hadoopJarStep1_5)
+		    .withActionOnFailure("TERMINATE_JOB_FLOW");
+		steps.add(stepConfig1_5);
+		
 		//////////////
 		// Step 2
 		/////////////

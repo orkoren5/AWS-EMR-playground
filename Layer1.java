@@ -82,15 +82,18 @@ public class Layer1 {
     	}
     	//System.out.println("Valid words: " + validWords);
     	
-    	//split the validWords to <key,val> for the Reducer    	
-    	if(validWords.size() > 1)
-    	{
-    		LongWritable amount = new LongWritable(ngram_amount);
-			int midWordIndex =  validWords.size()/2;
+    	//split the validWords to <key,val> for the Reducer
+    	int size = validWords.size();
+    	if(size > 1)
+    	{    		
+			int midWordIndex = size/2;
 			String middleWord = validWords.remove(midWordIndex);			
 			WordWordDecade wordMiddle = new WordWordDecade(middleWord, year);
 			//System.out.println("Mapper Output wordMiddle: Key:" + wordMiddle.toString() + ", Value " + amount.toString());
-			context.write(wordMiddle , amount);
+			if (size > 2) {
+				long duplicates = -1*ngram_amount*(size-2); // the middle word will be counted more than one, so we need to remove duplicates
+				context.write(wordMiddle , new LongWritable(duplicates));
+			}
 			
 			for(String word : validWords)
 			{
@@ -98,12 +101,7 @@ public class Layer1 {
 				// value of c(w,wi) or c(wi,w)
 				WordWordDecade wordPair = new WordWordDecade(middleWord, word, year);
 				//System.out.println("Mapper Output words: Key:" + wordPair.toString() + ", Value " + amount.toString());
-				context.write(wordPair , amount);
-				
-				WordWordDecade wordSingle = new WordWordDecade(word, year);
-				//System.out.println("Mapper Output wordSingle: Key:" + wordSingle.toString() + ", Value " + amount.toString());
-				context.write(wordSingle , amount);
-		
+				context.write(wordPair , new LongWritable(ngram_amount));						
 			}
     	}
     }

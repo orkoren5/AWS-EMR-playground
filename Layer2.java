@@ -1,5 +1,4 @@
 import java.io.IOException;
-import java.util.Iterator;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
@@ -18,8 +17,6 @@ import DataStructures.DSLayer2;
 import DataStructures.DSLayer3;
 import DataStructures.DataStructureBase;
 import DataStructures.WordWordDecade;
-
-
 
 public class Layer2 {
 
@@ -78,23 +75,17 @@ public class Layer2 {
 	    }
 	}
 	
-	
-	
-
-	  public static class PartitionerClass extends Partitioner<WordWordDecade, DataStructureBase>
+    public static class PartitionerClass extends Partitioner<WordWordDecade, DataStructureBase> {
+		@Override
+		public int getPartition(WordWordDecade key, DataStructureBase value, int numPartitions)
 		{
-			@Override
-			public int getPartition(WordWordDecade key, DataStructureBase value, int numPartitions)
-			{
-				int decade = key.getDecade(); 
-				int decadeToPrint = decade % 12;
-				//System.out.println("PartitionerClass L1 decadeToPrint:" + decadeToPrint);
-				return decadeToPrint % numPartitions; //12 - num of decade from 1900 to 2020
-				
-			}
+			int decade = key.getDecade(); 
+			int decadeToPrint = decade % 12;
+			//System.out.println("PartitionerClass L1 decadeToPrint:" + decadeToPrint);
+			return decadeToPrint % numPartitions; //12 - num of decade from 1900 to 2020
+			
 		}
-
-	
+	}
 	
 	public static class Layer2_Reducer extends Reducer<WordWordDecade, DSLayer2, WordWordDecade, DataStructureBase> {
 		
@@ -112,27 +103,16 @@ public class Layer2 {
 				return;
 			}
 			
-			// Case when the is defined by the first word and decade
-			Iterator<DSLayer2> it = values.iterator();			
+			// Case when the key is defined by the first word and decade					
+			// The total number of word 1 will be the first value in the iterable, by design
+			long totalNumberOfWord1 = values.iterator().next().getNumber();		
 			
-			// The total number of word 1 will be the first value in the iterable
-			// That's because we defined the secondary sort to be WordWordDecade's sort			
-			long totalNumberOfWord1 = it.next().getNumber();		
-			
-			// If the key had only one value - then that key had only a decade in it (by design)
-			if (!it.hasNext()) {
-				WordWordDecade new_wwdKey = new WordWordDecade(key.getDecade());
-				DataStructureBase new_value = DataStructureBase.create(totalNumberOfWord1, 0);
-				//System.out.println("Writing - Key: " + new_wwdKey.toString() + ", Value: " + new_value.toString());
+			for (DSLayer2 value : values) {					
+				WordWordDecade new_wwdKey = new WordWordDecade(key.getWord1(), value.getWord(), key.getDecade());
+				DataStructureBase new_value = DataStructureBase.create(value.getNumber(), totalNumberOfWord1);
+				//System.out.println("----Writing - Key: " + new_wwdKey.toString() + ", Value: " + new_value.toString());
 				context.write(new_wwdKey, new_value);
-			} else {
-				for (DSLayer2 value : values) {					
-					WordWordDecade new_wwdKey = new WordWordDecade(key.getWord1(), value.getWord(), key.getDecade());
-					DataStructureBase new_value = DataStructureBase.create(value.getNumber(), totalNumberOfWord1);
-					//System.out.println("----Writing - Key: " + new_wwdKey.toString() + ", Value: " + new_value.toString());
-					context.write(new_wwdKey, new_value);
-				}		
-			}
+			}					
 		}
 	}
 
