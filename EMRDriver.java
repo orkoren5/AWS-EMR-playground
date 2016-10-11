@@ -74,18 +74,18 @@ public class EMRDriver {
 		List<StepConfig> steps = new ArrayList<StepConfig>();
 		
 		//arg1
-				String outputPathL1= "s3n://yoed-or-two/output/output-Layer1" + rnd;
-				String outputPathL2 = "s3n://yoed-or-two/output/output-Layer2" + rnd;
-				String outputPathL3 = "s3n://yoed-or-two/output/output-Layer3" + rnd;
-				String outputPathL4A = "s3n://yoed-or-two/output/output-Layer4A" + rnd;
-				String outputPathL4B = "s3n://yoed-or-two/output/output-Layer4B" + rnd;
-				
+		String outputPathL1= "s3n://yoed-or-two/output/output-Layer1" + rnd;
+		String outputPathL2 = "s3n://yoed-or-two/output/output-Layer2" + rnd;
+		String outputPathL3 = "s3n://yoed-or-two/output/output-Layer3" + rnd;
+		String outputPathL4A = "s3n://yoed-or-two/output/output-Layer4A" + rnd;
+		String outputPathL4B = "s3n://yoed-or-two/output/output-Layer4B" + rnd;
 		
-				//corpus
-				String arg0 = "s3://datasets.elasticmapreduce/ngrams/books/20090715/eng-gb-all/5gram/data"; 
-		        //String arg0 =  "s3://dsp112/eng.corp.10k";
-				//String arg0 =  "s3n://yoed-or-two/eng.corp.10k";
-		        // TODO Change corpus
+
+		//corpus
+		String arg0 = "s3://datasets.elasticmapreduce/ngrams/books/20090715/eng-gb-all/5gram/data"; 
+        //String arg0 =  "s3://dsp112/eng.corp.10k";
+		//String arg0 =  "s3n://yoed-or-two/eng.corp.10k";
+        // TODO Change corpus
 				
 				
 		//////////////
@@ -102,7 +102,22 @@ public class EMRDriver {
 		    .withHadoopJarStep(hadoopJarStep1)
 		    .withActionOnFailure("TERMINATE_JOB_FLOW");
 		steps.add(stepConfig1);
-				
+			
+		//////////////
+		// Step 1.5
+		/////////////
+		HadoopJarStepConfig hadoopJarStep1_5 = new HadoopJarStepConfig()
+				.withJar("s3n://yoed-or-two/Layer1AndHalf.jar")
+	            .withMainClass("Layer1AndHalf.class")
+	            .withArgs(arg0 , outputPathL1);
+        
+	 
+		StepConfig stepConfig1_5 = new StepConfig()
+		    .withName("layer1_and_half")
+		    .withHadoopJarStep(hadoopJarStep1_5)
+		    .withActionOnFailure("TERMINATE_JOB_FLOW");
+		steps.add(stepConfig1_5);
+		
 		//////////////
 		// Step 2
 		/////////////

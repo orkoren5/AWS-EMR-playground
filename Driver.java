@@ -27,16 +27,19 @@ public class Driver
 		Job jobLayer1 = initLayer1Job(args[0], outputFolder);
 		jobLayer1.waitForCompletion(true);
 		
-		Job jobLayer2 = initLayer2Job(outputFolder, outputFolder + "b");
+		Job jobLayer11 = initLayer11Job(outputFolder, outputFolder + "b");
+		jobLayer11.waitForCompletion(true);
+		
+		Job jobLayer2 = initLayer2Job(outputFolder + "b", outputFolder + "c");
 		jobLayer2.waitForCompletion(true);
 		
-		Job jobLayer3 = initLayer3Job(outputFolder + "b", outputFolder + "c");
+		Job jobLayer3 = initLayer3Job(outputFolder + "c", outputFolder + "d");
 		jobLayer3.waitForCompletion(true);
 		
-		Job jobLayer4 = initLayer4AJob(outputFolder + "c", outputFolder + "d", args[2]);
+		Job jobLayer4 = initLayer4AJob(outputFolder + "d", outputFolder + "e", args[2]);
 		jobLayer4.waitForCompletion(true);
 		
-		Job jobLayer5 = initLayer4BJob(outputFolder + "c", outputFolder + "e", args[3]);
+		Job jobLayer5 = initLayer4BJob(outputFolder + "d", outputFolder + "f", args[3]);
 		jobLayer5.waitForCompletion(true);
 		
 		System.exit(0);
@@ -56,6 +59,25 @@ public class Driver
 	    job.setOutputKeyClass(WordWordDecade.class);
 	    job.setOutputValueClass(LongWritable.class);
 	    job.setInputFormatClass(SequenceFileInputFormat.class);
+	    FileInputFormat.addInputPath(job, new Path(input));
+	    FileOutputFormat.setOutputPath(job, new Path(output));
+	    
+	    System.out.println("job Layer1 created");
+	    return job;
+	    	
+	}
+	
+	public static Job initLayer11Job(String input, String output) throws IOException 
+	{
+		System.out.println("init Layer1 job");
+		
+	    Configuration conf = new Configuration();
+	    Job job = Job.getInstance(conf, "ass2");
+	    job.setJarByClass(Layer1AndHalf.class);
+	    job.setMapperClass(Layer1AndHalf.Layer1AndHalf_Mapper.class);
+	    job.setReducerClass(Layer1AndHalf.Layer1AndHalf_Reducer.class);
+	    job.setOutputKeyClass(WordWordDecade.class);
+	    job.setOutputValueClass(LongWritable.class);
 	    FileInputFormat.addInputPath(job, new Path(input));
 	    FileOutputFormat.setOutputPath(job, new Path(output));
 	    
