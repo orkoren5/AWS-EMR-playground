@@ -128,11 +128,12 @@ public class Layer4B
 		}
 		
 		private double calcFMeasure(int tp, int tn, int fp, int fn) {
-			//System.out.println("calcFMeasure; int tp, int tn, int fp, int fn :" + tp + "," + tn + "," + fp + "," + fn );
+			System.out.println("calcFMeasure; int tp, int tn, int fp, int fn :" + tp + "," + tn + "," + fp + "," + fn );
 			if(tp == 0)
 				return 0;
 			double precision = tp / (tp + fp);
 			double recall = tp / (tp + fn);
+			System.out.println("precision: " + precision + " recall: " + recall);
 			return 2 * (precision * recall) / (precision + recall);
 		}
 		
@@ -167,6 +168,7 @@ public class Layer4B
 			
 			double FMeasure = calcFMeasure(tp, tn, fp, fn);
 			System.out.println("FMeasure: " + FMeasure );
+			context.write(new Text("Threshold"), new DoubleWritable((double)threshold));
 			context.write(new Text("TP"), new DoubleWritable((double)tp));
 			context.write(new Text("TN"), new DoubleWritable((double)tn));
 			context.write(new Text("FP"), new DoubleWritable((double)fp));

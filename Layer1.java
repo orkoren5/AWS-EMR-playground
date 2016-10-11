@@ -82,24 +82,15 @@ public class Layer1 {
     	}
     	//System.out.println("Valid words: " + validWords);
     	
-    	//split the validWords to <key,val> for the Reducer
-    	int size = validWords.size();
-    	if(size > 1)
+    	//split the validWords to <key,val> for the Reducer    	
+    	if(validWords.size() > 1)
     	{
     		LongWritable amount = new LongWritable(ngram_amount);
-    		LongWritable decade_amount = new LongWritable(ngram_amount*size);
-			int midWordIndex = (int) Math.ceil(size / 2.0);
-			String middleWord = validWords.remove(midWordIndex);
-	
-			//<{*,*,decade},amount>
-			WordWordDecade emptyPair = new WordWordDecade(year);
-			//System.out.println("Mapper Output emptyPair- Key:" + emptyPair.toString() + ", Value:" + amount.toString());
-			context.write(emptyPair , decade_amount);
-			
+			int midWordIndex =  validWords.size()/2;
+			String middleWord = validWords.remove(midWordIndex);			
 			WordWordDecade wordMiddle = new WordWordDecade(middleWord, year);
 			//System.out.println("Mapper Output wordMiddle: Key:" + wordMiddle.toString() + ", Value " + amount.toString());
 			context.write(wordMiddle , amount);
-		
 			
 			for(String word : validWords)
 			{
@@ -125,41 +116,21 @@ public class Layer1 {
     }    
   }
 
-  public static class PartitionerClass extends Partitioner<WordWordDecade, LongWritable>
+	public static class PartitionerClass extends Partitioner<WordWordDecade, LongWritable>
 	{
 		@Override
 		public int getPartition(WordWordDecade key, LongWritable value, int numPartitions)
-		{
-			
-			int decade = key.getDecade(); 
-			int decadeToPrint = decade % 12;
+		{					
+			int decadeToPrint = key.getDecade() % 12;
 			//System.out.println("PartitionerClass L1 decadeToPrint:" + decadeToPrint);
 			return decadeToPrint % numPartitions; //12 - num of decade from 1900 to 2020
-			
-			/*if(key.getDecade() < 1910)
-			{
-			   return 0;
-			}
-			else if(key.getDecade()<1920)
-			{
-			   return 1 % numPartitions;
-			}
-			else
-			{
-			   return 2 % numPartitions;
-			}*/
-			
 		}
 	}
   
   
-  public static class LayerOneReducer
-       extends Reducer<WordWordDecade,LongWritable,WordWordDecade,LongWritable> 
+  public static class LayerOneReducer extends Reducer<WordWordDecade,LongWritable,WordWordDecade,LongWritable> 
   {
-
-    public void reduce(WordWordDecade key, Iterable<LongWritable> values,
-                       Context context
-                       ) throws IOException, InterruptedException 
+    public void reduce(WordWordDecade key, Iterable<LongWritable> values, Context context) throws IOException, InterruptedException 
     {
        //System.out.println("$$ Reducing L1: " + key.toString());	
 	   long sum = 0;
@@ -180,7 +151,7 @@ public class Layer1 {
     Job job = Job.getInstance(conf, "ass2");
     job.setJarByClass(Layer1.class);
     job.setMapperClass(Layer1Mapper.class);
-    job.setPartitionerClass(PartitionerClass.class);
+    //job.setPartitionerClass(PartitionerClass.class);
     job.setCombinerClass(LayerOneReducer.class);
     job.setReducerClass(LayerOneReducer.class);
     job.setOutputKeyClass(WordWordDecade.class);

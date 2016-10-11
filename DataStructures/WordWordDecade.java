@@ -76,19 +76,20 @@ public class WordWordDecade implements WritableComparable<WordWordDecade> {
 	public boolean isCouple() {
 		return !(word1.equals(EMPTY_STR) || word2.equals(EMPTY_STR));
 	}
+	
+	/**
+	 * gets weather this key has two empty words
+	 * @return Weather this has two empty words
+	 */
+	public boolean isDecadeOnly() {
+		return (word1.equals(EMPTY_STR) && word2.equals(EMPTY_STR));
+	}
+	
 	/**
 	 * gets the former word in the key (Dicionary order)
 	 */
 	public String getWord1(){
 		return word1;
-	}
-
-	/**
-	 * clears word1 field
-	 */
-	public void clearWord1(){
-		this.word1 = this.word2;
-		this.word2 = EMPTY_STR;
 	}
 	
 	/**
@@ -96,13 +97,6 @@ public class WordWordDecade implements WritableComparable<WordWordDecade> {
 	 */
 	public String getWord2(){
 		return word2;
-	}
-
-	/**
-	 * clears word1 field
-	 */
-	public void clearWord2(){
-		this.word2 = EMPTY_STR;
 	}
 	
 	/**

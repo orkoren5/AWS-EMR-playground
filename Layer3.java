@@ -40,7 +40,7 @@ public class Layer3 {
 			}
 
 			//System.out.println("Mapper Output : Key:" + wwdKey.toString() + ", Value " + ds.toString());
-			context.write(wwdKey, ds);
+			context.write(wwdKey, ds);			
 		}
 
 	}
@@ -49,13 +49,12 @@ public class Layer3 {
 		
 		public void reduce(WordWordDecade key, Iterable<DSLayer3> values, Context context)
 				throws IOException, InterruptedException {
-		
-			//System.out.println("Reducing L3: " + key.toString());
+						
 			long pairNum = 0, 
 				word1Num = 0, 
 				word2Num = 0; 
 			
-			// By design, values is has 2 members, or 1 if it is a decade only.
+			// By design, 'values' consist of exactly 2 members
 			for (DSLayer3 value : values) {	
 				pairNum = value.getPairSum();
 				if (word1Num == 0) {
