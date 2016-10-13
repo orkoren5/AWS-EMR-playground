@@ -56,23 +56,20 @@ public class Layer1 {
     	
     	// if broken line
     	if (splitted.length < 5)
-    	{ 
-    		//System.out.println("splitted.length:" + splitted.length + " < 5: -> return");
     		return;
-    	}
     	
     	int year = Integer.parseInt(splitted[1]);
     	if (year < 1900)
-    	{
-    		//System.out.println("decade < 1900: -> return");
     		return;
-    	}
-    	
-    	// save amount of ngram
-    	long ngram_amount = Long.parseLong(splitted[2]);    	
 
     	// clean stop words and signs - save valid to validWords
     	String[] ngrams = splitted[0].split(" ");
+    	if (ngrams.length < 2)
+    		return;
+    	
+    	// save amount of ngram
+    	long ngram_amount = Long.parseLong(splitted[2]);    
+    	
     	ArrayList<String> validWords = new ArrayList<String>();
     	for (int i = 0; i < ngrams.length; i++) {
     		String word = cleanWord(ngrams[i]);

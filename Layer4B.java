@@ -131,8 +131,9 @@ public class Layer4B
 			System.out.println("calcFMeasure; int tp, int tn, int fp, int fn :" + tp + "," + tn + "," + fp + "," + fn );
 			if(tp == 0)
 				return 0;
-			double precision = tp / (tp + fp);
-			double recall = tp / (tp + fn);
+			double tpd = (double)tp;
+			double precision = tpd / (tp + fp);
+			double recall = tpd / (tp + fn);
 			System.out.println("precision: " + precision + " recall: " + recall);
 			return 2 * (precision * recall) / (precision + recall);
 		}
@@ -195,7 +196,6 @@ public class Layer4B
 		    job.setMapOutputValueClass(DSLayer5.class);
 		    job.setOutputKeyClass(WordWordDecade.class);
 		    job.setOutputValueClass(DoubleWritable.class);
-		    //job.setInputFormatClass(SequenceFileInputFormat.class);
 		    FileInputFormat.addInputPath(job, new Path(args[1]));
 		    FileOutputFormat.setOutputPath(job, new Path(args[2]));
 		    System.exit(job.waitForCompletion(true) ? 0 : 1);
