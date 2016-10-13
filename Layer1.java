@@ -57,7 +57,7 @@ public class Layer1 {
     	// if broken line
     	if (splitted.length < 5)
     	{ 
-    		//System.out.println("splitted.length:" + splitted.length + " < 3: -> return");
+    		//System.out.println("splitted.length:" + splitted.length + " < 5: -> return");
     		return;
     	}
     	
