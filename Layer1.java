@@ -55,7 +55,7 @@ public class Layer1 {
     	String[] splitted = value.toString().split("\t");	
     	
     	// if broken line
-    	if (splitted.length < 3)
+    	if (splitted.length < 5)
     	{ 
     		//System.out.println("splitted.length:" + splitted.length + " < 3: -> return");
     		return;

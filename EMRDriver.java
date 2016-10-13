@@ -75,6 +75,7 @@ public class EMRDriver {
 		
 		//arg1
 		String outputPathL1= "s3n://yoed-or-two/output/output-Layer1" + rnd;
+		String outputPathL1_5= "s3n://yoed-or-two/output/output-Layer1_5" + rnd;
 		String outputPathL2 = "s3n://yoed-or-two/output/output-Layer2" + rnd;
 		String outputPathL3 = "s3n://yoed-or-two/output/output-Layer3" + rnd;
 		String outputPathL4A = "s3n://yoed-or-two/output/output-Layer4A" + rnd;
@@ -109,7 +110,7 @@ public class EMRDriver {
 		HadoopJarStepConfig hadoopJarStep1_5 = new HadoopJarStepConfig()
 				.withJar("s3n://yoed-or-two/Layer1AndHalf.jar")
 	            .withMainClass("Layer1AndHalf.class")
-	            .withArgs(arg0 , outputPathL1);
+	            .withArgs(outputPathL1 , outputPathL1_5);
         
 	 
 		StepConfig stepConfig1_5 = new StepConfig()
@@ -124,7 +125,7 @@ public class EMRDriver {
 		HadoopJarStepConfig hadoopJarStep2 = new HadoopJarStepConfig()
 				.withJar("s3n://yoed-or-two/Layer2.jar")
 	            .withMainClass("Layer2.class") 
-	            .withArgs(outputPathL1, outputPathL2);
+	            .withArgs(outputPathL1_5, outputPathL2);
 	 
 		StepConfig stepConfig2 = new StepConfig()
 		    .withName("layer2")
